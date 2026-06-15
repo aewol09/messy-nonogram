@@ -1,0 +1,452 @@
+[
+  {
+    "id": "animal_easy_1",
+    "theme": "animal",
+    "difficulty": "easy",
+    "name": "Cat (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      [
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        0,
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "animal_easy_2",
+    "theme": "animal",
+    "difficulty": "easy",
+    "name": "Dog (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "animal_easy_3",
+    "theme": "animal",
+    "difficulty": "easy",
+    "name": "Rabbit (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "animal_easy_4",
+    "theme": "animal",
+    "difficulty": "easy",
+    "name": "Bear (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "animal_easy_5",
+    "theme": "animal",
+    "difficulty": "easy",
+    "name": "Fox (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "animal_easy_6",
+    "theme": "animal",
+    "difficulty": "easy",
+    "name": "Elephant (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        1,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "animal_easy_7",
+    "theme": "animal",
+    "difficulty": "easy",
+    "name": "Lion (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        0,
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "animal_easy_8",
+    "theme": "animal",
+    "difficulty": "easy",
+    "name": "Tiger (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "animal_easy_9",
+    "theme": "animal",
+    "difficulty": "easy",
+    "name": "Monkey (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "animal_easy_10",
+    "theme": "animal",
+    "difficulty": "easy",
+    "name": "Deer (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        1,
+        0
+      ]
+    ]
+  }
+]

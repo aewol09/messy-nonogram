@@ -1,0 +1,452 @@
+[
+  {
+    "id": "travel_easy_1",
+    "theme": "travel",
+    "difficulty": "easy",
+    "name": "Airplane (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        1,
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "travel_easy_2",
+    "theme": "travel",
+    "difficulty": "easy",
+    "name": "Suitcase (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "travel_easy_3",
+    "theme": "travel",
+    "difficulty": "easy",
+    "name": "Map (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        0,
+        1,
+        1,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "travel_easy_4",
+    "theme": "travel",
+    "difficulty": "easy",
+    "name": "Camera (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "travel_easy_5",
+    "theme": "travel",
+    "difficulty": "easy",
+    "name": "Passport (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "travel_easy_6",
+    "theme": "travel",
+    "difficulty": "easy",
+    "name": "Globe (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        0,
+        1,
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "travel_easy_7",
+    "theme": "travel",
+    "difficulty": "easy",
+    "name": "Tent (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "travel_easy_8",
+    "theme": "travel",
+    "difficulty": "easy",
+    "name": "Train (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "travel_easy_9",
+    "theme": "travel",
+    "difficulty": "easy",
+    "name": "Bus (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        1,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "travel_easy_10",
+    "theme": "travel",
+    "difficulty": "easy",
+    "name": "Hotel (Easy)",
+    "width": 5,
+    "height": 5,
+    "solution": [
+      [
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        1,
+        0,
+        1,
+        0
+      ]
+    ]
+  }
+]
