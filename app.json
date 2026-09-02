@@ -1,23 +1,33 @@
 {
   "expo": {
-    "name": "rn-temp",
-    "slug": "rn-temp",
+    "name": "Pixel Puzzle Quest",
+    "slug": "pixel-puzzle-quest",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "pixelpuzzlequest",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F8FAFC"
+    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.aewol09.pixelpuzzlequest"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#F8FAFC",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.aewol09.rntemp"
+      "package": "com.aewol09.pixelpuzzlequest",
+      "permissions": [
+        "VIBRATE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
