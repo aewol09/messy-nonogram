@@ -1,19 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Switch, Alert, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ArrowLeft, Bell, Moon, RotateCcw, Info, ChevronRight, ShieldCheck } from 'lucide-react-native';
+import { ArrowLeft, Bell, Moon, RotateCcw, Info, ChevronRight, ShieldCheck, User, Cloud } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGameStore } from '../store/useGameStore';
 import { getTheme } from '../styles/theme';
+import AuthModal from '../components/AuthModal';
 import { RootStackParamList } from '../../App';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Settings'>;
 
 export default function Settings() {
   const navigation = useNavigation<NavigationProp>();
-  const { settings, updateSettings, resetAllProgress } = useGameStore();
+  const { currentUser, settings, updateSettings, resetAllProgress } = useGameStore();
   const theme = getTheme(settings.darkMode);
+
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleReset = () => {
     Alert.alert(
@@ -43,6 +46,32 @@ export default function Settings() {
       </View>
 
       <ScrollView style={styles.content}>
+        {/* Account & Sync Section */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: theme.subText }]}>계정 & 클라우드 데이터</Text>
+          
+          <TouchableOpacity 
+            style={[styles.row, { backgroundColor: theme.card, borderColor: theme.border }]} 
+            onPress={() => setShowAuthModal(true)}
+          >
+            <View style={styles.rowLeft}>
+              <View style={[styles.iconBox, { backgroundColor: theme.indigo[100] }]}>
+                <User size={20} color={theme.primary} />
+              </View>
+              <View>
+                <Text style={[styles.rowLabel, { color: theme.text }]}>
+                  {currentUser ? currentUser.name : '로그인하기'}
+                </Text>
+                <Text style={[styles.subLabel, { color: theme.subText }]}>
+                  {currentUser ? currentUser.email : '구글 또는 이메일 계정 연동'}
+                </Text>
+              </View>
+            </View>
+            <ChevronRight size={20} color={theme.border} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Game Settings */}
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: theme.subText }]}>게임 설정</Text>
           
@@ -77,6 +106,7 @@ export default function Settings() {
           </View>
         </View>
 
+        {/* Data Management */}
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: theme.subText }]}>데이터 관리</Text>
           
@@ -94,6 +124,7 @@ export default function Settings() {
           </TouchableOpacity>
         </View>
 
+        {/* Info */}
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: theme.subText }]}>정보</Text>
           
@@ -121,6 +152,9 @@ export default function Settings() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Auth Modal */}
+      <AuthModal visible={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </SafeAreaView>
   );
 }
@@ -181,6 +215,10 @@ const styles = StyleSheet.create({
   rowLabel: {
     fontSize: 16,
     fontWeight: '600',
+  },
+  subLabel: {
+    fontSize: 12,
+    marginTop: 2,
   },
   versionText: {
     fontSize: 16,

@@ -7,19 +7,20 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../../App';
 import { useGameStore } from '../store/useGameStore';
 import { puzzles } from '../data';
-import { colors } from '../styles/colors';
+import { getTheme } from '../styles/theme';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'ThemeSelect'>;
 
 const themes = [
-  { id: 'animal', name: '동물', icon: Cat, bgColor: colors.orange[100], iconColor: colors.orange[600] },
-  { id: 'food', name: '음식', icon: Coffee, bgColor: colors.green[100], iconColor: colors.green[600] },
-  { id: 'travel', name: '여행', icon: Plane, bgColor: colors.blue[100], iconColor: colors.blue[600] }
+  { id: 'animal', name: '동물', icon: Cat, colorKey: 'orange' },
+  { id: 'food', name: '음식', icon: Coffee, colorKey: 'green' },
+  { id: 'travel', name: '여행', icon: Plane, colorKey: 'blue' },
 ];
 
 export default function ThemeSelect() {
   const navigation = useNavigation<NavigationProp>();
-  const completedPuzzles = useGameStore((state) => state.completedPuzzles);
+  const { completedPuzzles, settings } = useGameStore();
+  const theme = getTheme(settings.darkMode);
 
   const getCompletion = (themeId: string) => {
     const total = puzzles.filter(p => p.theme === themeId).length;
@@ -28,32 +29,33 @@ export default function ThemeSelect() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={[styles.header, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <ArrowLeft size={24} color={colors.slate[700]} />
+          <ArrowLeft size={24} color={theme.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>테마 선택</Text>
+        <Text style={[styles.headerTitle, { color: theme.text }]}>테마 선택</Text>
       </View>
 
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
-        {themes.map((theme) => {
-          const stats = getCompletion(theme.id);
-          const Icon = theme.icon;
+        {themes.map(t => {
+          const stats = getCompletion(t.id);
+          const Icon = t.icon;
+          const palette = (theme as any)[t.colorKey] || theme.indigo;
 
           return (
             <TouchableOpacity
-              key={theme.id}
-              style={styles.card}
+              key={t.id}
+              style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}
               activeOpacity={0.8}
-              onPress={() => navigation.navigate('DifficultySelect', { themeId: theme.id })}
+              onPress={() => navigation.navigate('DifficultySelect', { themeId: t.id })}
             >
-              <View style={[styles.iconContainer, { backgroundColor: theme.bgColor }]}>
-                <Icon size={32} color={theme.iconColor} />
+              <View style={[styles.iconContainer, { backgroundColor: palette[100] }]}>
+                <Icon size={32} color={palette[600]} />
               </View>
               <View style={styles.cardContent}>
-                <Text style={styles.cardTitle}>{theme.name}</Text>
-                <Text style={styles.cardStats}>
+                <Text style={[styles.cardTitle, { color: theme.text }]}>{t.name}</Text>
+                <Text style={[styles.cardStats, { color: theme.subText }]}>
                   {stats.completed} / {stats.total} 완료 ({stats.percentage}%)
                 </Text>
               </View>
@@ -68,15 +70,12 @@ export default function ThemeSelect() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: colors.white,
     borderBottomWidth: 1,
-    borderBottomColor: colors.slate[100],
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -90,7 +89,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: colors.slate[800],
   },
   content: {
     flex: 1,
@@ -102,11 +100,9 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.white,
     padding: 24,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.slate[100],
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -125,12 +121,11 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.slate[800],
     marginBottom: 4,
   },
   cardStats: {
     fontSize: 14,
     fontWeight: '500',
-    color: colors.slate[500],
   },
 });
+

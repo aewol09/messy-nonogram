@@ -35,7 +35,9 @@ export default function PuzzleList() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <ArrowLeft size={24} color={theme.text} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: theme.text }]}>{themeName} - {diffId.toUpperCase()}</Text>
+        <Text style={[styles.headerTitle, { color: theme.text }]}>
+          {themeName} - {diffId.toUpperCase()}
+        </Text>
       </View>
 
       <ScrollView style={styles.content} contentContainerStyle={styles.gridContainer}>
@@ -44,36 +46,43 @@ export default function PuzzleList() {
             const isCompleted = completedPuzzles.includes(puzzle.id);
             const isInProgress = !!inProgressPuzzles[puzzle.id];
 
-            let cardStyle: any = { backgroundColor: theme.card, borderColor: theme.border };
-            let textStyle: any = { color: theme.subText };
+            let cardBg = theme.card;
+            let cardBorder = theme.border;
+            let badgeBg = theme.slate[100];
+            let badgeText = theme.slate[700];
 
             if (isCompleted) {
-              cardStyle = { backgroundColor: theme.indigo[50], borderColor: theme.indigo[200] };
-              textStyle = { color: theme.indigo[700] };
+              cardBg = theme.indigo[50];
+              cardBorder = theme.indigo[200];
+              badgeBg = theme.indigo[200];
+              badgeText = theme.indigo[700] || theme.primary;
             } else if (isInProgress) {
-              cardStyle = { backgroundColor: theme.amber[50], borderColor: theme.amber[200] };
-              textStyle = { color: theme.amber[700] };
+              cardBg = theme.amber[50];
+              cardBorder = theme.amber[200];
+              badgeBg = theme.amber[200];
+              badgeText = theme.amber[700] || '#B45309';
             }
 
             return (
               <TouchableOpacity
                 key={puzzle.id}
-                style={[styles.card, cardStyle]}
+                style={[styles.card, { backgroundColor: cardBg, borderColor: cardBorder }]}
                 activeOpacity={0.8}
                 onPress={() => navigation.navigate('Game', { puzzleId: puzzle.id })}
               >
-                <Text style={[styles.numberText, textStyle]}>{idx + 1}</Text>
-                
-                {isCompleted && (
-                  <View style={styles.iconBottomRight}>
-                    <CheckCircle2 size={20} color={theme.primary} />
+                <View style={styles.cardHeaderRow}>
+                  <View style={[styles.numberBadge, { backgroundColor: badgeBg }]}>
+                    <Text style={[styles.numberBadgeText, { color: badgeText }]}>{idx + 1}</Text>
                   </View>
-                )}
-                {isInProgress && !isCompleted && (
-                  <View style={[styles.iconBottomRight, { opacity: 0.5 }]}>
-                    <Play size={16} color={theme.amber[700]} fill={theme.amber[700]} />
-                  </View>
-                )}
+                  {isCompleted && <CheckCircle2 size={20} color={theme.primary} />}
+                  {isInProgress && !isCompleted && (
+                    <Play size={16} color={theme.amber[600]} fill={theme.amber[600]} />
+                  )}
+                </View>
+
+                <Text style={[styles.puzzleNameText, { color: theme.text }]} numberOfLines={2}>
+                  {puzzle.name}
+                </Text>
               </TouchableOpacity>
             );
           })}
@@ -121,24 +130,37 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '48%',
-    height: 80, // Fixed height to make it horizontal
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: 96,
+    borderRadius: 16,
+    padding: 12,
+    justifyContent: 'space-between',
     borderWidth: 1,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
   },
-  numberText: {
-    fontSize: 24,
+  cardHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  numberBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  numberBadgeText: {
+    fontSize: 14,
     fontWeight: 'bold',
   },
-  iconBottomRight: {
-    position: 'absolute',
-    bottom: 12,
-    right: 12,
+  puzzleNameText: {
+    fontSize: 14,
+    fontWeight: '700',
+    lineHeight: 18,
   },
 });
+

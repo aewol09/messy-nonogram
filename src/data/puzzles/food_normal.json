@@ -3,7 +3,7 @@
     "id": "food_normal_1",
     "theme": "food",
     "difficulty": "normal",
-    "name": "Apple",
+    "name": "Apple (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -133,7 +133,7 @@
     "id": "food_normal_2",
     "theme": "food",
     "difficulty": "normal",
-    "name": "Burger",
+    "name": "Burger (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -263,7 +263,7 @@
     "id": "food_normal_3",
     "theme": "food",
     "difficulty": "normal",
-    "name": "Pizza",
+    "name": "Pizza (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -393,7 +393,7 @@
     "id": "food_normal_4",
     "theme": "food",
     "difficulty": "normal",
-    "name": "Donut",
+    "name": "Donut (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -523,7 +523,7 @@
     "id": "food_normal_5",
     "theme": "food",
     "difficulty": "normal",
-    "name": "Cake",
+    "name": "Cake (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -653,7 +653,7 @@
     "id": "food_normal_6",
     "theme": "food",
     "difficulty": "normal",
-    "name": "Sushi",
+    "name": "Sushi (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -783,7 +783,7 @@
     "id": "food_normal_7",
     "theme": "food",
     "difficulty": "normal",
-    "name": "Taco",
+    "name": "Taco (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -913,7 +913,7 @@
     "id": "food_normal_8",
     "theme": "food",
     "difficulty": "normal",
-    "name": "Ice Cream",
+    "name": "Ice Cream (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -1043,7 +1043,7 @@
     "id": "food_normal_9",
     "theme": "food",
     "difficulty": "normal",
-    "name": "Salad",
+    "name": "Salad (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -1173,7 +1173,7 @@
     "id": "food_normal_10",
     "theme": "food",
     "difficulty": "normal",
-    "name": "Bread",
+    "name": "Bread (Normal)",
     "width": 10,
     "height": 10,
     "solution": [

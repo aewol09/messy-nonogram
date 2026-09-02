@@ -1,23 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Play, Grid, Settings as SettingsIcon } from 'lucide-react-native';
+import { Play, Grid, Settings as SettingsIcon, Gamepad2, User } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../../App';
 import { useGameStore } from '../store/useGameStore';
 import { getTheme } from '../styles/theme';
+import AuthModal from '../components/AuthModal';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
 export default function Home() {
   const navigation = useNavigation<NavigationProp>();
-  const { settings } = useGameStore();
+  const { currentUser, settings } = useGameStore();
   const theme = getTheme(settings.darkMode);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      {/* Top User Bar */}
+      <View style={styles.topBar}>
+        <TouchableOpacity
+          style={[styles.userChip, { backgroundColor: theme.card, borderColor: theme.border }]}
+          onPress={() => setShowAuthModal(true)}
+          activeOpacity={0.8}
+        >
+          <User size={16} color={theme.primary} />
+          <Text style={[styles.userChipText, { color: theme.text }]} numberOfLines={1}>
+            {currentUser ? currentUser.name : '로그인'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.titleContainer}>
+        <View style={[styles.logoIconBadge, { backgroundColor: theme.indigo[100] }]}>
+          <Gamepad2 size={56} color={theme.primary} />
+        </View>
         <Text style={[styles.titlePrimary, { color: theme.primary }]}>Pixel Puzzle</Text>
         <Text style={[styles.titleSecondary, { color: theme.secondary }]}>Quest</Text>
       </View>
@@ -50,6 +69,9 @@ export default function Home() {
           <Text style={[styles.tertiaryButtonText, { color: theme.subText }]}>설정</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Auth Modal */}
+      <AuthModal visible={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </SafeAreaView>
   );
 }
@@ -60,10 +82,45 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
+    position: 'relative',
+  },
+  topBar: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    zIndex: 10,
+  },
+  userChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+    gap: 6,
+    elevation: 2,
+  },
+  userChipText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    maxWidth: 100,
   },
   titleContainer: {
-    marginBottom: 48,
+    marginBottom: 40,
     alignItems: 'center',
+  },
+  logoIconBadge: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+    elevation: 4,
+    shadowColor: '#4F46E5',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
   },
   titlePrimary: {
     fontSize: 48,

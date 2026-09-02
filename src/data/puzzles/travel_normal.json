@@ -3,7 +3,7 @@
     "id": "travel_normal_1",
     "theme": "travel",
     "difficulty": "normal",
-    "name": "Airplane",
+    "name": "Airplane (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -133,7 +133,7 @@
     "id": "travel_normal_2",
     "theme": "travel",
     "difficulty": "normal",
-    "name": "Suitcase",
+    "name": "Suitcase (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -263,7 +263,7 @@
     "id": "travel_normal_3",
     "theme": "travel",
     "difficulty": "normal",
-    "name": "Map",
+    "name": "Map (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -393,7 +393,7 @@
     "id": "travel_normal_4",
     "theme": "travel",
     "difficulty": "normal",
-    "name": "Camera",
+    "name": "Camera (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -523,7 +523,7 @@
     "id": "travel_normal_5",
     "theme": "travel",
     "difficulty": "normal",
-    "name": "Passport",
+    "name": "Passport (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -653,7 +653,7 @@
     "id": "travel_normal_6",
     "theme": "travel",
     "difficulty": "normal",
-    "name": "Globe",
+    "name": "Globe (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -783,7 +783,7 @@
     "id": "travel_normal_7",
     "theme": "travel",
     "difficulty": "normal",
-    "name": "Tent",
+    "name": "Tent (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -913,7 +913,7 @@
     "id": "travel_normal_8",
     "theme": "travel",
     "difficulty": "normal",
-    "name": "Train",
+    "name": "Train (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -1043,7 +1043,7 @@
     "id": "travel_normal_9",
     "theme": "travel",
     "difficulty": "normal",
-    "name": "Bus",
+    "name": "Bus (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -1173,7 +1173,7 @@
     "id": "travel_normal_10",
     "theme": "travel",
     "difficulty": "normal",
-    "name": "Hotel",
+    "name": "Hotel (Normal)",
     "width": 10,
     "height": 10,
     "solution": [

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo, useEffect } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import { View, Text, StyleSheet, PanResponder, useWindowDimensions } from 'react-native';
 import { getRowHints, getColHints } from '../utils/nonogram';
 import { getTheme } from '../styles/theme';
@@ -10,14 +10,26 @@ interface NonogramBoardProps {
   solution: number[][];
   board: number[][];
   onCellInteract: (r: number, c: number, type: 'start' | 'move' | 'end') => void;
+  maxAvailableWidth?: number;
+  maxAvailableHeight?: number;
 }
 
-export default function NonogramBoard({ width, height, solution, board, onCellInteract }: NonogramBoardProps) {
+export default function NonogramBoard({
+  width,
+  height,
+  solution,
+  board,
+  onCellInteract,
+  maxAvailableWidth,
+  maxAvailableHeight,
+}: NonogramBoardProps) {
   const { settings } = useGameStore();
   const theme = getTheme(settings.darkMode);
-  const { width: screenWidth } = useWindowDimensions();
-  
-  // Use a ref to keep track of the latest onCellInteract to avoid stale closures in PanResponder
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+
+  const availWidth = maxAvailableWidth || (windowWidth - 32);
+  const availHeight = maxAvailableHeight || (windowHeight - 200);
+
   const onInteractRef = useRef(onCellInteract);
   useEffect(() => {
     onInteractRef.current = onCellInteract;
@@ -29,22 +41,26 @@ export default function NonogramBoard({ width, height, solution, board, onCellIn
   const maxRowHints = Math.max(...rowHints.map(h => h.length), 1);
   const maxColHints = Math.max(...colHints.map(h => h.length), 1);
 
-  // Dynamically calculate cell size based on width and hints
+  // Dynamically calculate cell size so the entire board + hints fit 100% within available bounds
   const cellSize = useMemo(() => {
-    const availableWidth = Math.max(screenWidth - 64, 200); // Ensure at least 200px available width
-    const horizontalCells = width + maxRowHints * 0.6; 
-    return Math.max(Math.min(Math.floor(availableWidth / horizontalCells), 35), 10); // Min cell size 10
-  }, [width, maxRowHints, screenWidth]);
+    const hintFactor = 0.65;
+    const horizontalFactor = maxRowHints * hintFactor + width;
+    const verticalFactor = maxColHints * hintFactor + height;
 
-  const hintSize = cellSize * 0.7;
+    const maxCellW = Math.floor((availWidth - 30) / horizontalFactor);
+    const maxCellH = Math.floor((availHeight - 30) / verticalFactor);
+
+    const calculated = Math.min(maxCellW, maxCellH);
+    return Math.max(11, Math.min(38, calculated));
+  }, [width, height, maxRowHints, maxColHints, availWidth, availHeight]);
+
+  const rowHintWidth = Math.round(maxRowHints * (cellSize * 0.65) + 4);
+  const colHintHeight = Math.round(maxColHints * (cellSize * 0.65) + 4);
 
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
-      onPanResponderTerminationRequest: () => false,
-      onShouldBlockNativeResponder: () => true,
-      
       onPanResponderGrant: (evt) => {
         const { locationX, locationY } = evt.nativeEvent;
         const r = Math.floor(locationY / cellSize);
@@ -66,72 +82,119 @@ export default function NonogramBoard({ width, height, solution, board, onCellIn
       },
       onPanResponderTerminate: () => {
         onInteractRef.current(-1, -1, 'end');
-      }
+      },
     })
   ).current;
 
   return (
     <View style={[styles.container, { backgroundColor: theme.card, borderColor: theme.border }]}>
       <View style={styles.row}>
-        {/* Top-Left Empty Space */}
-        <View 
+        {/* Top-Left Empty Corner */}
+        <View
           style={[
-            styles.emptySpace, 
-            { 
-              width: maxRowHints * (cellSize * 0.6) + 8, 
-              height: maxColHints * hintSize + 8, 
-              backgroundColor: theme.background, 
-              borderColor: theme.border 
-            }
-          ]} 
+            styles.emptySpace,
+            {
+              width: rowHintWidth,
+              height: colHintHeight,
+              backgroundColor: theme.background,
+              borderColor: theme.border,
+            },
+          ]}
         />
-        
+
         {/* Top Column Hints */}
-        <View style={[styles.colHintsContainer, { borderBottomColor: theme.border, backgroundColor: theme.background }]}>
-          {colHints.map((hints, c) => (
-            <View 
-              key={`col-hint-${c}`} 
-              style={[
-                styles.colHintColumn, 
-                { 
-                  width: cellSize,
-                  height: maxColHints * hintSize + 8, 
-                  borderRightColor: theme.border 
-                }
-              ]}
-            >
-              {hints.map((hint, i) => (
-                <Text key={i} style={[styles.hintText, { color: theme.text, fontSize: cellSize * 0.4 }]}>{hint}</Text>
-              ))}
-            </View>
-          ))}
+        <View
+          style={[
+            styles.colHintsContainer,
+            {
+              borderBottomColor: theme.subText,
+              backgroundColor: theme.background,
+            },
+          ]}
+        >
+          {colHints.map((hints, c) => {
+            const isThickRight = (c + 1) % 5 === 0 && c + 1 !== width;
+            return (
+              <View
+                key={`col-hint-${c}`}
+                style={[
+                  styles.colHintColumn,
+                  {
+                    width: cellSize,
+                    height: colHintHeight,
+                    borderRightColor: isThickRight ? theme.subText : theme.border,
+                    borderRightWidth: isThickRight ? 2 : 1,
+                  },
+                ]}
+              >
+                {hints.map((hint, i) => (
+                  <Text
+                    key={i}
+                    style={[
+                      styles.hintText,
+                      {
+                        color: theme.text,
+                        fontSize: Math.max(9, Math.floor(cellSize * 0.42)),
+                      },
+                    ]}
+                  >
+                    {hint}
+                  </Text>
+                ))}
+              </View>
+            );
+          })}
         </View>
       </View>
 
       <View style={styles.row}>
         {/* Left Row Hints */}
-        <View style={[styles.rowHintsContainer, { borderRightColor: theme.border, backgroundColor: theme.background }]}>
-          {rowHints.map((hints, r) => (
-            <View 
-              key={`row-hint-${r}`} 
-              style={[
-                styles.rowHintRow, 
-                { 
-                  height: cellSize,
-                  width: maxRowHints * (cellSize * 0.6) + 8, 
-                  borderBottomColor: theme.border 
-                }
-              ]}
-            >
-              {hints.map((hint, i) => (
-                <Text key={i} style={[styles.hintText, styles.hintTextRow, { color: theme.text, fontSize: cellSize * 0.4 }]}>{hint}</Text>
-              ))}
-            </View>
-          ))}
+        <View
+          style={[
+            styles.rowHintsContainer,
+            {
+              borderRightColor: theme.subText,
+              backgroundColor: theme.background,
+            },
+          ]}
+        >
+          {rowHints.map((hints, r) => {
+            const isThickBottom = (r + 1) % 5 === 0 && r + 1 !== height;
+            return (
+              <View
+                key={`row-hint-${r}`}
+                style={[
+                  styles.rowHintRow,
+                  {
+                    height: cellSize,
+                    width: rowHintWidth,
+                    borderBottomColor: isThickBottom ? theme.subText : theme.border,
+                    borderBottomWidth: isThickBottom ? 2 : 1,
+                  },
+                ]}
+              >
+                {hints.map((hint, i) => (
+                  <Text
+                    key={i}
+                    style={[
+                      styles.hintText,
+                      styles.hintTextRow,
+                      {
+                        color: theme.text,
+                        fontSize: Math.max(9, Math.floor(cellSize * 0.42)),
+                      },
+                    ]}
+                  >
+                    {hint}
+                  </Text>
+                ))}
+              </View>
+            );
+          })}
         </View>
 
         {/* Board Grid */}
-        <View 
+        <View
           style={[styles.boardGrid, { borderColor: theme.subText }]}
           {...panResponder.panHandlers}
         >
@@ -140,26 +203,45 @@ export default function NonogramBoard({ width, height, solution, board, onCellIn
               {row.map((cell, c) => {
                 const isBorderBottom = (r + 1) % 5 === 0 && r + 1 !== height;
                 const isBorderRight = (c + 1) % 5 === 0 && c + 1 !== width;
-                
-                let cellStyle: any[] = [
-                  styles.cell, 
-                  { 
-                    width: cellSize, 
-                    height: cellSize,
-                    borderColor: theme.border, 
-                    backgroundColor: theme.card 
-                  }
-                ];
-                
-                if (isBorderBottom) cellStyle.push([styles.cellBorderBottomThick, { borderBottomColor: theme.subText }]);
-                if (isBorderRight) cellStyle.push([styles.cellBorderRightThick, { borderRightColor: theme.subText }]);
 
-                if (cell === 1) cellStyle.push({ backgroundColor: theme.text });
-                else if (cell === 2) cellStyle.push({ backgroundColor: theme.background });
+                const cellStyle: any[] = [
+                  styles.cell,
+                  {
+                    width: cellSize,
+                    height: cellSize,
+                    borderColor: theme.border,
+                    backgroundColor: theme.card,
+                  },
+                ];
+
+                if (isBorderBottom) {
+                  cellStyle.push({ borderBottomWidth: 2, borderBottomColor: theme.subText });
+                }
+                if (isBorderRight) {
+                  cellStyle.push({ borderRightWidth: 2, borderRightColor: theme.subText });
+                }
+
+                if (cell === 1) {
+                  cellStyle.push({ backgroundColor: theme.primary });
+                } else if (cell === 2) {
+                  cellStyle.push({ backgroundColor: theme.background });
+                }
 
                 return (
                   <View key={`cell-${r}-${c}`} style={cellStyle} pointerEvents="none">
-                    {cell === 2 && <Text style={[styles.xText, { color: theme.subText, fontSize: cellSize * 0.5 }]}>✕</Text>}
+                    {cell === 2 && (
+                      <Text
+                        style={[
+                          styles.xText,
+                          {
+                            color: theme.rose ? theme.rose[600] : '#E11D48',
+                            fontSize: Math.max(10, Math.floor(cellSize * 0.55)),
+                          },
+                        ]}
+                      >
+                        ✕
+                      </Text>
+                    )}
                   </View>
                 );
               })}
@@ -173,11 +255,17 @@ export default function NonogramBoard({ width, height, solution, board, onCellIn
 
 const styles = StyleSheet.create({
   container: {
-    padding: 12,
-    borderRadius: 12,
+    padding: 10,
+    borderRadius: 16,
     borderWidth: 1,
     alignItems: 'center',
+    justifyContent: 'center',
     alignSelf: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
   },
   row: {
     flexDirection: 'row',
@@ -193,7 +281,7 @@ const styles = StyleSheet.create({
   colHintColumn: {
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingBottom: 4,
+    paddingBottom: 2,
     borderRightWidth: 1,
   },
   rowHintsContainer: {
@@ -205,12 +293,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingRight: 4,
     borderBottomWidth: 1,
+    gap: 2,
   },
   hintText: {
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   hintTextRow: {
-    marginLeft: 2,
+    marginHorizontal: 1,
   },
   boardGrid: {
     borderRightWidth: 2,
@@ -225,13 +315,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cellBorderBottomThick: {
-    borderBottomWidth: 2,
-  },
-  cellBorderRightThick: {
-    borderRightWidth: 2,
-  },
   xText: {
-    fontWeight: 'bold',
+    fontWeight: '900',
   },
 });
+

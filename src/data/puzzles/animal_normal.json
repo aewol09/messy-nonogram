@@ -3,7 +3,7 @@
     "id": "animal_normal_1",
     "theme": "animal",
     "difficulty": "normal",
-    "name": "Cat",
+    "name": "Cat (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -133,7 +133,7 @@
     "id": "animal_normal_2",
     "theme": "animal",
     "difficulty": "normal",
-    "name": "Dog",
+    "name": "Dog (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -263,7 +263,7 @@
     "id": "animal_normal_3",
     "theme": "animal",
     "difficulty": "normal",
-    "name": "Rabbit",
+    "name": "Rabbit (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -393,7 +393,7 @@
     "id": "animal_normal_4",
     "theme": "animal",
     "difficulty": "normal",
-    "name": "Bear",
+    "name": "Bear (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -523,7 +523,7 @@
     "id": "animal_normal_5",
     "theme": "animal",
     "difficulty": "normal",
-    "name": "Fox",
+    "name": "Fox (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -653,7 +653,7 @@
     "id": "animal_normal_6",
     "theme": "animal",
     "difficulty": "normal",
-    "name": "Elephant",
+    "name": "Elephant (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -783,7 +783,7 @@
     "id": "animal_normal_7",
     "theme": "animal",
     "difficulty": "normal",
-    "name": "Lion",
+    "name": "Lion (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -913,7 +913,7 @@
     "id": "animal_normal_8",
     "theme": "animal",
     "difficulty": "normal",
-    "name": "Tiger",
+    "name": "Tiger (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -1043,7 +1043,7 @@
     "id": "animal_normal_9",
     "theme": "animal",
     "difficulty": "normal",
-    "name": "Monkey",
+    "name": "Monkey (Normal)",
     "width": 10,
     "height": 10,
     "solution": [
@@ -1173,7 +1173,7 @@
     "id": "animal_normal_10",
     "theme": "animal",
     "difficulty": "normal",
-    "name": "Deer",
+    "name": "Deer (Normal)",
     "width": 10,
     "height": 10,
     "solution": [

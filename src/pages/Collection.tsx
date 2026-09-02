@@ -2,52 +2,65 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ArrowLeft, Cat, Coffee, Plane, Lock } from 'lucide-react-native';
+import { ArrowLeft, Cat, Coffee, Plane, Lock, Zap, Star, ShieldAlert } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../../App';
 import { useGameStore } from '../store/useGameStore';
 import { puzzles } from '../data';
-import { colors } from '../styles/colors';
+import { getTheme } from '../styles/theme';
+import PixelArtPreview from '../components/PixelArtPreview';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Collection'>;
 
 const themes = [
   { id: 'animal', name: '동물', icon: Cat },
   { id: 'food', name: '음식', icon: Coffee },
-  { id: 'travel', name: '여행', icon: Plane }
+  { id: 'travel', name: '여행', icon: Plane },
+];
+
+const difficultySections = [
+  { id: 'easy', title: 'Easy (5x5)', icon: Zap, themeKey: 'emerald' },
+  { id: 'normal', title: 'Normal (10x10)', icon: Star, themeKey: 'amber' },
+  { id: 'hard', title: 'Hard (15x15)', icon: ShieldAlert, themeKey: 'rose' },
 ];
 
 export default function Collection() {
   const navigation = useNavigation<NavigationProp>();
-  const completedPuzzles = useGameStore((state) => state.completedPuzzles);
+  const { completedPuzzles, settings } = useGameStore();
+  const theme = getTheme(settings.darkMode);
   const [activeTab, setActiveTab] = useState('animal');
 
   const themePuzzles = puzzles.filter(p => p.theme === activeTab);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={[styles.header, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
         <View style={styles.headerTop}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <ArrowLeft size={24} color={colors.slate[700]} />
+            <ArrowLeft size={24} color={theme.text} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>컬렉션</Text>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>컬렉션</Text>
         </View>
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsContainer}>
-          {themes.map(theme => {
-            const Icon = theme.icon;
-            const isActive = activeTab === theme.id;
-            
+          {themes.map(t => {
+            const Icon = t.icon;
+            const isActive = activeTab === t.id;
+
             return (
               <TouchableOpacity
-                key={theme.id}
-                onPress={() => setActiveTab(theme.id)}
-                style={[styles.tab, isActive ? styles.tabActive : styles.tabInactive]}
+                key={t.id}
+                onPress={() => setActiveTab(t.id)}
+                style={[
+                  styles.tab,
+                  isActive
+                    ? [styles.tabActive, { backgroundColor: theme.primary }]
+                    : [styles.tabInactive, { backgroundColor: theme.background, borderColor: theme.border, borderWidth: 1 }],
+                ]}
               >
-                <Icon size={18} color={isActive ? colors.white : colors.slate[600]} />
-                <Text style={[styles.tabText, isActive ? styles.tabTextActive : styles.tabTextInactive]}>
-                  {theme.name}
+                <Icon size={18} color={isActive ? theme.white : theme.subText} />
+                <Text style={[styles.tabText, { color: isActive ? theme.white : theme.subText }]}>
+                  {t.name}
                 </Text>
               </TouchableOpacity>
             );
@@ -55,50 +68,79 @@ export default function Collection() {
         </ScrollView>
       </View>
 
-      <ScrollView 
-        style={styles.content} 
-        contentContainerStyle={styles.gridContainer}
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.grid}>
-          {themePuzzles.map((puzzle, idx) => {
-            const isCompleted = completedPuzzles.includes(puzzle.id);
+        {difficultySections.map(section => {
+          const sectionPuzzles = themePuzzles.filter(p => p.difficulty === section.id);
+          const completedCount = sectionPuzzles.filter(p => completedPuzzles.includes(p.id)).length;
+          const SectionIcon = section.icon;
+          const palette = (theme as any)[section.themeKey] || theme.indigo;
 
-            return (
-              <View key={puzzle.id} style={[styles.card, isCompleted ? styles.cardCompleted : styles.cardLocked]}>
-                {isCompleted ? (
-                  <View style={styles.pixelArtContainer}>
-                    <View style={styles.pixelArtGrid}>
-                      {puzzle.solution.map((row, rIdx) => (
-                        <View key={`r-${rIdx}`} style={styles.pixelRow}>
-                          {row.map((cell, cIdx) => (
-                            <View 
-                              key={`c-${cIdx}`} 
-                              style={[
-                                styles.pixelCell, 
-                                { backgroundColor: cell === 1 ? colors.primary : 'transparent' }
-                              ]} 
+          return (
+            <View key={section.id} style={styles.sectionContainer}>
+              <View style={[styles.sectionHeader, { backgroundColor: theme.card, borderColor: theme.border }]}>
+                <View style={styles.sectionTitleRow}>
+                  <View style={[styles.sectionIconBox, { backgroundColor: palette[100] }]}>
+                    <SectionIcon size={18} color={palette[600]} />
+                  </View>
+                  <Text style={[styles.sectionTitleText, { color: theme.text }]}>
+                    {section.title}
+                  </Text>
+                </View>
+                <Text style={[styles.sectionStatsText, { color: theme.subText }]}>
+                  {completedCount} / {sectionPuzzles.length} 완성
+                </Text>
+              </View>
+
+              <View style={styles.grid}>
+                {sectionPuzzles.map((puzzle, idx) => {
+                  const isCompleted = completedPuzzles.includes(puzzle.id);
+
+                  return (
+                    <View
+                      key={puzzle.id}
+                      style={[
+                        styles.card,
+                        isCompleted
+                          ? [styles.cardCompleted, { backgroundColor: theme.card, borderColor: theme.border }]
+                          : [styles.cardLocked, { backgroundColor: theme.background, borderColor: theme.border }],
+                      ]}
+                    >
+                      {isCompleted ? (
+                        <View style={styles.pixelArtContainer}>
+                          <View style={styles.pixelWrapper}>
+                            <PixelArtPreview
+                              solution={puzzle.solution}
+                              size={100}
+                              primaryColor={theme.primary}
+                              gridBorder={false}
                             />
-                          ))}
+                          </View>
+                          <View style={[styles.puzzleNameOverlay, { backgroundColor: theme.card }]}>
+                            <Text style={[styles.puzzleNameText, { color: theme.text }]} numberOfLines={1}>
+                              {puzzle.name}
+                            </Text>
+                          </View>
                         </View>
-                      ))}
+                      ) : (
+                        <View style={styles.lockedContainer}>
+                          <Lock size={24} color={theme.subText} />
+                          <Text style={[styles.lockedText, { color: theme.subText }]}>{idx + 1}번 퍼즐</Text>
+                        </View>
+                      )}
                     </View>
-                    <View style={styles.puzzleNameOverlay}>
-                      <Text style={styles.puzzleNameText} numberOfLines={1}>{puzzle.name}</Text>
-                    </View>
-                  </View>
-                ) : (
-                  <View style={styles.lockedContainer}>
-                    <Lock size={28} color={colors.slate[400]} />
-                    <Text style={styles.lockedText}>{idx + 1}번 퍼즐</Text>
-                  </View>
+                  );
+                })}
+                {sectionPuzzles.length % 2 !== 0 && (
+                  <View style={[styles.card, { borderWidth: 0, backgroundColor: 'transparent' }]} />
                 )}
               </View>
-            );
-          })}
-          {/* Add empty views to align last row left if it's odd */}
-          {themePuzzles.length % 2 !== 0 && <View style={[styles.card, { borderWidth: 0, backgroundColor: 'transparent' }]} />}
-        </View>
+            </View>
+          );
+        })}
       </ScrollView>
     </SafeAreaView>
   );
@@ -107,12 +149,9 @@ export default function Collection() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   header: {
-    backgroundColor: colors.white,
     borderBottomWidth: 1,
-    borderBottomColor: colors.slate[100],
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -132,7 +171,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: colors.slate[800],
   },
   tabsContainer: {
     paddingHorizontal: 16,
@@ -148,30 +186,55 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tabActive: {
-    backgroundColor: colors.primary,
     elevation: 2,
-    shadowColor: colors.indigo[200],
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
+    shadowOpacity: 0.2,
     shadowRadius: 4,
   },
-  tabInactive: {
-    backgroundColor: colors.slate[100],
-  },
+  tabInactive: {},
   tabText: {
     fontWeight: 'bold',
-  },
-  tabTextActive: {
-    color: colors.white,
-  },
-  tabTextInactive: {
-    color: colors.slate[600],
   },
   content: {
     flex: 1,
   },
-  gridContainer: {
+  scrollContainer: {
     padding: 16,
+    paddingBottom: 40,
+    gap: 24,
+  },
+  sectionContainer: {
+    gap: 12,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    elevation: 1,
+  },
+  sectionTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  sectionIconBox: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sectionTitleText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  sectionStatsText: {
+    fontSize: 13,
+    fontWeight: '600',
   },
   grid: {
     flexDirection: 'row',
@@ -180,20 +243,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   card: {
-    width: '48%', // For 2 columns
+    width: '48%',
     aspectRatio: 1,
     borderRadius: 16,
     borderWidth: 1,
     overflow: 'hidden',
-    padding: 8,
   },
   cardCompleted: {
-    backgroundColor: colors.white,
-    borderColor: colors.slate[200],
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
   },
   cardLocked: {
-    backgroundColor: colors.slate[50],
-    borderColor: colors.slate[200],
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -204,37 +267,35 @@ const styles = StyleSheet.create({
   lockedText: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: colors.slate[400],
   },
   pixelArtContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     position: 'relative',
+    padding: 8,
   },
-  pixelArtGrid: {
+  pixelWrapper: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  pixelRow: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  pixelCell: {
-    flex: 1,
-    margin: 0.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 24,
   },
   puzzleNameOverlay: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    paddingVertical: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.8)',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.05)',
   },
   puzzleNameText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 'bold',
-    color: colors.slate[800],
   },
 });
+
+

@@ -27,3 +27,19 @@ export interface UserProgress {
   inProgressPuzzles: Record<string, GameState>; // id -> current state
   hintCounts: Record<string, number>; // id -> hints used
 }
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  provider: 'google' | 'email' | 'guest';
+}
+
+export interface UserAccountData {
+  profile: UserProfile;
+  completedPuzzles: string[];
+  inProgressPuzzles: Record<string, GameState>;
+  hintPool: number;
+  isUnlimitedHints: boolean;
+}
+
