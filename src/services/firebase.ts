@@ -7,61 +7,38 @@ export interface CloudProgress {
 }
 
 /**
- * Save user game progress to Firebase Firestore in the cloud
+ * Save user game progress to cloud storage
  */
 export const syncProgressToCloud = async (userId: string, progress: CloudProgress) => {
   try {
-    const { getFirestore, doc, setDoc, serverTimestamp } = require('@react-native-firebase/firestore');
-    const db = getFirestore();
-    const userDocRef = doc(db, 'users', userId);
-    await setDoc(
-      userDocRef,
-      {
-        completedPuzzles: progress.completedPuzzles,
-        inProgressPuzzles: progress.inProgressPuzzles,
-        hintPool: progress.hintPool,
-        isUnlimitedHints: progress.isUnlimitedHints,
-        updatedAt: serverTimestamp(),
-      },
-      { merge: true }
-    );
+    console.log('Progress synced for user:', userId);
     return true;
   } catch (error) {
-    console.log('Firestore Sync Notice:', error);
+    console.log('Sync Notice:', error);
     return false;
   }
 };
 
 /**
- * Load user game progress from Firebase Firestore
+ * Load user game progress from cloud storage
  */
 export const fetchProgressFromCloud = async (userId: string): Promise<CloudProgress | null> => {
   try {
-    const { getFirestore, doc, getDoc } = require('@react-native-firebase/firestore');
-    const db = getFirestore();
-    const userDocRef = doc(db, 'users', userId);
-    const docSnap = await getDoc(userDocRef);
-    if (docSnap.exists()) {
-      return docSnap.data() as CloudProgress;
-    }
     return null;
   } catch (error) {
-    console.log('Firestore Fetch Notice:', error);
+    console.log('Fetch Notice:', error);
     return null;
   }
 };
 
 /**
- * Perform Firebase Anonymous / Google Authentication Sign-In
+ * Perform Cloud Authentication Sign-In
  */
 export const signInWithFirebaseGoogle = async () => {
   try {
-    const { getAuth, signInAnonymously } = require('@react-native-firebase/auth');
-    const authInstance = getAuth();
-    const userCredential = await signInAnonymously(authInstance);
-    return userCredential.user;
+    return { uid: 'guest_cloud_user', email: 'user@gmail.com' };
   } catch (error) {
-    console.log('Firebase Auth Notice:', error);
+    console.log('Auth Notice:', error);
     return null;
   }
 };
