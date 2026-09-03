@@ -14,7 +14,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.aewol09.pixelpuzzlequest"
+      "bundleIdentifier": "com.aewol09.pixelpuzzlequest",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,6 +26,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.aewol09.pixelpuzzlequest",
+      "googleServicesFile": "./google-services.json",
       "permissions": [
         "VIBRATE"
       ]
