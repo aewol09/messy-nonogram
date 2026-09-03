@@ -14,8 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.aewol09.pixelpuzzlequest",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "bundleIdentifier": "com.aewol09.pixelpuzzlequest"
     },
     "android": {
       "adaptiveIcon": {
@@ -26,7 +25,6 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.aewol09.pixelpuzzlequest",
-      "googleServicesFile": "./google-services.json",
       "permissions": [
         "VIBRATE"
       ]
@@ -38,10 +36,6 @@
       "eas": {
         "projectId": "180979f8-1c96-4e1c-9253-e607e8c83a9b"
       }
-    },
-    "plugins": [
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth"
-    ]
+    }
   }
 }

@@ -1,6 +1,3 @@
-import { getAuth, signInAnonymously } from '@react-native-firebase/auth';
-import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from '@react-native-firebase/firestore';
-
 export interface CloudProgress {
   completedPuzzles: string[];
   inProgressPuzzles: Record<string, any>;
@@ -14,6 +11,7 @@ export interface CloudProgress {
  */
 export const syncProgressToCloud = async (userId: string, progress: CloudProgress) => {
   try {
+    const { getFirestore, doc, setDoc, serverTimestamp } = require('@react-native-firebase/firestore');
     const db = getFirestore();
     const userDocRef = doc(db, 'users', userId);
     await setDoc(
@@ -39,6 +37,7 @@ export const syncProgressToCloud = async (userId: string, progress: CloudProgres
  */
 export const fetchProgressFromCloud = async (userId: string): Promise<CloudProgress | null> => {
   try {
+    const { getFirestore, doc, getDoc } = require('@react-native-firebase/firestore');
     const db = getFirestore();
     const userDocRef = doc(db, 'users', userId);
     const docSnap = await getDoc(userDocRef);
@@ -57,6 +56,7 @@ export const fetchProgressFromCloud = async (userId: string): Promise<CloudProgr
  */
 export const signInWithFirebaseGoogle = async () => {
   try {
+    const { getAuth, signInAnonymously } = require('@react-native-firebase/auth');
     const authInstance = getAuth();
     const userCredential = await signInAnonymously(authInstance);
     return userCredential.user;
