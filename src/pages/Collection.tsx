@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ArrowLeft, Cat, Coffee, Plane, Lock, Zap, Star, ShieldAlert } from 'lucide-react-native';
+import { ArrowLeft, Cat, Coffee, Plane, Lock, Zap, Star, ShieldAlert, Eye } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../../App';
 import { useGameStore } from '../store/useGameStore';
 import { puzzles } from '../data';
 import { getTheme } from '../styles/theme';
 import PixelArtPreview from '../components/PixelArtPreview';
+import { confirmAction } from '../utils/confirm';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Collection'>;
 
@@ -19,18 +20,35 @@ const themes = [
 ];
 
 const difficultySections = [
-  { id: 'easy', title: 'Easy (5x5)', icon: Zap, themeKey: 'emerald' },
-  { id: 'normal', title: 'Normal (10x10)', icon: Star, themeKey: 'amber' },
-  { id: 'hard', title: 'Hard (15x15)', icon: ShieldAlert, themeKey: 'rose' },
+  { id: 'easy', title: 'Easy (10x10)', icon: Zap, themeKey: 'emerald' },
+  { id: 'normal', title: 'Normal (15x15)', icon: Star, themeKey: 'amber' },
+  { id: 'hard', title: 'Hard (20x20)', icon: ShieldAlert, themeKey: 'rose' },
 ];
 
 export default function Collection() {
   const navigation = useNavigation<NavigationProp>();
-  const { completedPuzzles, settings } = useGameStore();
+  const { completedPuzzles, currentUser, unlockAllPuzzles, settings } = useGameStore();
   const theme = getTheme(settings.darkMode);
   const [activeTab, setActiveTab] = useState('animal');
 
-  const themePuzzles = puzzles.filter(p => p.theme === activeTab);
+  const isAdmin = currentUser?.isAdmin || currentUser?.email?.toLowerCase().includes('admin');
+  const themePuzzles = puzzles.filter((p) => p.theme === activeTab);
+
+  const handleUnlockAll = () => {
+    confirmAction(
+      '👑 어드민 권한: 전체 정답 공개',
+      '모든 테마와 난이도의 퍼즐을 완벽하게 해금하시겠습니까?',
+      () => {
+        unlockAllPuzzles();
+        if (Platform.OS === 'web') {
+          alert('👑 전체 정답 공개 완료! 모든 퍼즐이 해금되었습니다.');
+        } else {
+          Alert.alert('👑 전체 정답 공개 완료', '모든 퍼즐이 해금되어 전체 컬렉션을 확인하실 수 있습니다.');
+        }
+      },
+      '전체 해금'
+    );
+  };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -40,10 +58,21 @@ export default function Collection() {
             <ArrowLeft size={24} color={theme.text} />
           </TouchableOpacity>
           <Text style={[styles.headerTitle, { color: theme.text }]}>컬렉션</Text>
+
+          {isAdmin && (
+            <TouchableOpacity
+              style={[styles.adminBtn, { backgroundColor: '#7C3AED' }]}
+              onPress={handleUnlockAll}
+              activeOpacity={0.8}
+            >
+              <Eye size={16} color="#FFFFFF" />
+              <Text style={styles.adminBtnText}>👑 전체 정답 공개</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsContainer}>
-          {themes.map(t => {
+          {themes.map((t) => {
             const Icon = t.icon;
             const isActive = activeTab === t.id;
 
@@ -73,9 +102,9 @@ export default function Collection() {
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
-        {difficultySections.map(section => {
-          const sectionPuzzles = themePuzzles.filter(p => p.difficulty === section.id);
-          const completedCount = sectionPuzzles.filter(p => completedPuzzles.includes(p.id)).length;
+        {difficultySections.map((section) => {
+          const sectionPuzzles = themePuzzles.filter((p) => p.difficulty === section.id);
+          const completedCount = sectionPuzzles.filter((p) => completedPuzzles.includes(p.id)).length;
           const SectionIcon = section.icon;
           const palette = (theme as any)[section.themeKey] || theme.indigo;
 
@@ -114,6 +143,7 @@ export default function Collection() {
                           <View style={styles.pixelWrapper}>
                             <PixelArtPreview
                               solution={puzzle.solution}
+                              colorSolution={puzzle.colorSolution}
                               size={100}
                               primaryColor={theme.primary}
                               gridBorder={false}
@@ -169,7 +199,22 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   headerTitle: {
+    flex: 1,
     fontSize: 20,
+    fontWeight: 'bold',
+  },
+  adminBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    gap: 6,
+    elevation: 2,
+  },
+  adminBtnText: {
+    color: '#FFFFFF',
+    fontSize: 12,
     fontWeight: 'bold',
   },
   tabsContainer: {
@@ -297,5 +342,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-

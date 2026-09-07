@@ -8,20 +8,28 @@ interface NonogramBoardProps {
   width: number;
   height: number;
   solution: number[][];
+  colorSolution?: string[][];
   board: number[][];
   onCellInteract: (r: number, c: number, type: 'start' | 'move' | 'end') => void;
   maxAvailableWidth?: number;
   maxAvailableHeight?: number;
+  isWon?: boolean;
+  isAnimatingWin?: boolean;
+  revealProgress?: number;
 }
 
 export default function NonogramBoard({
   width,
   height,
   solution,
+  colorSolution,
   board,
   onCellInteract,
   maxAvailableWidth,
   maxAvailableHeight,
+  isWon = false,
+  isAnimatingWin = false,
+  revealProgress = 0,
 }: NonogramBoardProps) {
   const { settings } = useGameStore();
   const theme = getTheme(settings.darkMode);
@@ -38,10 +46,9 @@ export default function NonogramBoard({
   const rowHints = useMemo(() => getRowHints(solution), [solution]);
   const colHints = useMemo(() => getColHints(solution), [solution]);
 
-  const maxRowHints = Math.max(...rowHints.map(h => h.length), 1);
-  const maxColHints = Math.max(...colHints.map(h => h.length), 1);
+  const maxRowHints = Math.max(...rowHints.map((h) => h.length), 1);
+  const maxColHints = Math.max(...colHints.map((h) => h.length), 1);
 
-  // Dynamically calculate cell size so the entire board + hints fit 100% within available bounds
   const cellSize = useMemo(() => {
     const hintFactor = 0.65;
     const horizontalFactor = maxRowHints * hintFactor + width;
@@ -59,9 +66,10 @@ export default function NonogramBoard({
 
   const panResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponder: () => !isWon && !isAnimatingWin,
+      onMoveShouldSetPanResponder: () => !isWon && !isAnimatingWin,
       onPanResponderGrant: (evt) => {
+        if (isWon || isAnimatingWin) return;
         const { locationX, locationY } = evt.nativeEvent;
         const r = Math.floor(locationY / cellSize);
         const c = Math.floor(locationX / cellSize);
@@ -70,6 +78,7 @@ export default function NonogramBoard({
         }
       },
       onPanResponderMove: (evt) => {
+        if (isWon || isAnimatingWin) return;
         const { locationX, locationY } = evt.nativeEvent;
         const r = Math.floor(locationY / cellSize);
         const c = Math.floor(locationX / cellSize);
@@ -78,9 +87,11 @@ export default function NonogramBoard({
         }
       },
       onPanResponderRelease: () => {
+        if (isWon || isAnimatingWin) return;
         onInteractRef.current(-1, -1, 'end');
       },
       onPanResponderTerminate: () => {
+        if (isWon || isAnimatingWin) return;
         onInteractRef.current(-1, -1, 'end');
       },
     })
@@ -204,13 +215,37 @@ export default function NonogramBoard({
                 const isBorderBottom = (r + 1) % 5 === 0 && r + 1 !== height;
                 const isBorderRight = (c + 1) % 5 === 0 && c + 1 !== width;
 
+                let cellBg = theme.card;
+                if (cell === 1) {
+                  const hex = colorSolution && colorSolution[r] && colorSolution[r][c];
+                  if (hex && hex !== '0' && hex !== '') {
+                    if (isWon) {
+                      cellBg = hex;
+                    } else if (isAnimatingWin && revealProgress !== undefined) {
+                      const maxDist = Math.max(1, height - 1 + width - 1);
+                      const normPos = (r + c) / maxDist;
+                      if (normPos <= revealProgress) {
+                        cellBg = hex;
+                      } else {
+                        cellBg = theme.primary;
+                      }
+                    } else {
+                      cellBg = theme.primary;
+                    }
+                  } else {
+                    cellBg = theme.primary;
+                  }
+                } else if (cell === 2) {
+                  cellBg = theme.background;
+                }
+
                 const cellStyle: any[] = [
                   styles.cell,
                   {
                     width: cellSize,
                     height: cellSize,
                     borderColor: theme.border,
-                    backgroundColor: theme.card,
+                    backgroundColor: cellBg,
                   },
                 ];
 
@@ -221,15 +256,9 @@ export default function NonogramBoard({
                   cellStyle.push({ borderRightWidth: 2, borderRightColor: theme.subText });
                 }
 
-                if (cell === 1) {
-                  cellStyle.push({ backgroundColor: theme.primary });
-                } else if (cell === 2) {
-                  cellStyle.push({ backgroundColor: theme.background });
-                }
-
                 return (
                   <View key={`cell-${r}-${c}`} style={cellStyle} pointerEvents="none">
-                    {cell === 2 && (
+                    {cell === 2 && !isWon && !isAnimatingWin && (
                       <Text
                         style={[
                           styles.xText,
@@ -319,4 +348,3 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
 });
-

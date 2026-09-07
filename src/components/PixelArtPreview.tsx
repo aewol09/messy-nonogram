@@ -4,6 +4,7 @@ import { colors } from '../styles/colors';
 
 interface PixelArtPreviewProps {
   solution: number[][];
+  colorSolution?: string[][];
   size?: number;
   primaryColor?: string;
   backgroundColor?: string;
@@ -12,6 +13,7 @@ interface PixelArtPreviewProps {
 
 export default function PixelArtPreview({
   solution,
+  colorSolution,
   size = 160,
   primaryColor = colors.primary,
   backgroundColor = 'transparent',
@@ -36,18 +38,26 @@ export default function PixelArtPreview({
     >
       {solution.map((row, r) => (
         <View key={`r-${r}`} style={styles.row}>
-          {row.map((cell, c) => (
-            <View
-              key={`c-${r}-${c}`}
-              style={{
-                width: cellSize,
-                height: cellSize,
-                backgroundColor: cell === 1 ? primaryColor : 'transparent',
-                borderWidth: gridBorder ? 0.5 : 0,
-                borderColor: gridBorder ? 'rgba(0,0,0,0.05)' : 'transparent',
-              }}
-            />
-          ))}
+          {row.map((cell, c) => {
+            let color = 'transparent';
+            if (cell === 1) {
+              const hexColor = colorSolution && colorSolution[r] && colorSolution[r][c];
+              color = hexColor && hexColor !== '0' && hexColor !== '' ? hexColor : primaryColor;
+            }
+
+            return (
+              <View
+                key={`c-${r}-${c}`}
+                style={{
+                  width: cellSize,
+                  height: cellSize,
+                  backgroundColor: color,
+                  borderWidth: gridBorder ? 0.5 : 0,
+                  borderColor: gridBorder ? 'rgba(0,0,0,0.05)' : 'transparent',
+                }}
+              />
+            );
+          })}
         </View>
       ))}
     </View>

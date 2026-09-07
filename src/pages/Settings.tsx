@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Switch, Alert, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Switch, Alert, ScrollView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ArrowLeft, Bell, Moon, RotateCcw, Info, ChevronRight, ShieldCheck, User, Cloud } from 'lucide-react-native';
@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGameStore } from '../store/useGameStore';
 import { getTheme } from '../styles/theme';
 import AuthModal from '../components/AuthModal';
+import { confirmAction } from '../utils/confirm';
 import { RootStackParamList } from '../../App';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Settings'>;
@@ -19,20 +20,18 @@ export default function Settings() {
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleReset = () => {
-    Alert.alert(
+    confirmAction(
       '진행 상황 초기화',
       '모든 퍼즐 기록과 컬렉션이 삭제됩니다. 정말 초기화하시겠습니까?',
-      [
-        { text: '취소', style: 'cancel' },
-        { 
-          text: '초기화', 
-          style: 'destructive', 
-          onPress: () => {
-            resetAllProgress();
-            Alert.alert('완료', '모든 기록이 초기화되었습니다.');
-          } 
+      () => {
+        resetAllProgress();
+        if (Platform.OS === 'web') {
+          alert('모든 기록이 초기화되었습니다.');
+        } else {
+          Alert.alert('완료', '모든 기록이 초기화되었습니다.');
         }
-      ]
+      },
+      '초기화'
     );
   };
 
@@ -60,10 +59,10 @@ export default function Settings() {
               </View>
               <View>
                 <Text style={[styles.rowLabel, { color: theme.text }]}>
-                  {currentUser ? currentUser.name : '로그인하기'}
+                  {currentUser ? `아이디: ${currentUser.name}` : '로그인하기'}
                 </Text>
                 <Text style={[styles.subLabel, { color: theme.subText }]}>
-                  {currentUser ? currentUser.email : '구글 또는 이메일 계정 연동'}
+                  {currentUser ? `이메일: ${currentUser.email}` : '구글 또는 이메일 계정 연동'}
                 </Text>
               </View>
             </View>

@@ -13,9 +13,9 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'DifficultyS
 type RouteProps = RouteProp<RootStackParamList, 'DifficultySelect'>;
 
 const difficulties = [
-  { id: 'easy', name: 'Easy', size: '5x5', icon: Zap, themeColor: 'emerald' },
-  { id: 'normal', name: 'Normal', size: '10x10', icon: Star, themeColor: 'amber' },
-  { id: 'hard', name: 'Hard', size: '15x15', icon: ShieldAlert, themeColor: 'rose' }
+  { id: 'easy', name: 'Easy', size: '10x10', icon: Zap, themeColor: 'emerald' },
+  { id: 'normal', name: 'Normal', size: '15x15', icon: Star, themeColor: 'amber' },
+  { id: 'hard', name: 'Hard', size: '20x20', icon: ShieldAlert, themeColor: 'rose' }
 ];
 
 const themeNames: Record<string, string> = {

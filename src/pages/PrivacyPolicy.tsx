@@ -21,7 +21,7 @@ export default function PrivacyPolicy() {
       </View>
 
       <ScrollView style={styles.content} contentContainerStyle={styles.scrollContent}>
-        <Text style={[styles.title, { color: theme.text }]}>Pixel Puzzle Quest 개인정보 처리방침</Text>
+        <Text style={[styles.title, { color: theme.text }]}>Messy Nonogram 개인정보 처리방침</Text>
         
         <Text style={[styles.sectionTitle, { color: theme.text }]}>1. 수집하는 개인정보 항목</Text>
         <Text style={[styles.text, { color: theme.subText }]}>

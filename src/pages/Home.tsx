@@ -37,8 +37,8 @@ export default function Home() {
         <View style={[styles.logoIconBadge, { backgroundColor: theme.indigo[100] }]}>
           <Gamepad2 size={56} color={theme.primary} />
         </View>
-        <Text style={[styles.titlePrimary, { color: theme.primary }]}>Pixel Puzzle</Text>
-        <Text style={[styles.titleSecondary, { color: theme.secondary }]}>Quest</Text>
+        <Text style={[styles.titlePrimary, { color: theme.primary }]}>Messy</Text>
+        <Text style={[styles.titleSecondary, { color: theme.secondary }]}>Nonogram</Text>
       </View>
 
       <View style={styles.buttonContainer}>

@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "Pixel Puzzle Quest",
-    "slug": "pixel-puzzle-quest",
+    "name": "Messy Nonogram",
+    "slug": "messy-nonogram",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "pixelpuzzlequest",
+    "scheme": "messynonogram",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -14,7 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.aewol09.pixelpuzzlequest"
+      "bundleIdentifier": "com.aewol09.messynonogram"
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +24,7 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.aewol09.pixelpuzzlequest",
+      "package": "com.aewol09.messynonogram",
       "permissions": [
         "VIBRATE"
       ]

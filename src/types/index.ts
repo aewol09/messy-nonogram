@@ -9,6 +9,7 @@ export interface Puzzle {
   width: number;
   height: number;
   solution: number[][]; // 1 for filled, 0 for empty
+  colorSolution?: string[][]; // Hex color code strings for each cell when completed
 }
 
 export interface CellState {
@@ -33,6 +34,7 @@ export interface UserProfile {
   name: string;
   email: string;
   provider: 'google' | 'email' | 'guest';
+  isAdmin?: boolean;
 }
 
 export interface UserAccountData {
@@ -42,4 +44,3 @@ export interface UserAccountData {
   hintPool: number;
   isUnlimitedHints: boolean;
 }
-
