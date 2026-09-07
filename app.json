@@ -14,7 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.aewol09.messynonogram"
+      "bundleIdentifier": "com.messy.nonogram"
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +24,7 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.aewol09.messynonogram",
+      "package": "com.messy.nonogram",
       "versionCode": 1,
       "permissions": [
         "VIBRATE"
