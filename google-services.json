@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "945724465212",
+    "project_id": "messy-nonogram-ed9af",
+    "storage_bucket": "messy-nonogram-ed9af.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945724465212:android:c29b7d533ec8b2a123e339",
+        "android_client_info": {
+          "package_name": "com.messy.nonogram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945724465212-l2um32lcpo3psajqn3cu8hcuqmdv8nb1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDecDJepPMFJXzqQl7tmVeigkB8AwpKyrA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "945724465212-l2um32lcpo3psajqn3cu8hcuqmdv8nb1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
