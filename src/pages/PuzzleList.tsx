@@ -9,14 +9,10 @@ import { useGameStore } from '../store/useGameStore';
 import { getPuzzlesByDifficulty } from '../data';
 import { getTheme } from '../styles/theme';
 
+import { getTranslation, getLocalizedPuzzleName } from '../utils/i18n';
+
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'PuzzleList'>;
 type RouteProps = RouteProp<RootStackParamList, 'PuzzleList'>;
-
-const themeNames: Record<string, string> = {
-  animal: '동물',
-  food: '음식',
-  travel: '여행'
-};
 
 export default function PuzzleList() {
   const navigation = useNavigation<NavigationProp>();
@@ -25,8 +21,16 @@ export default function PuzzleList() {
   
   const { completedPuzzles, inProgressPuzzles, settings } = useGameStore();
   const theme = getTheme(settings.darkMode);
+  const lang = settings.language || 'ko';
+  const t = getTranslation(lang);
 
-  const themeName = themeNames[themeId] || '테마';
+  const themeNames: Record<string, string> = {
+    animal: t.themeAnimal,
+    food: t.themeFood,
+    travel: t.themeTravel,
+  };
+
+  const themeName = themeNames[themeId] || themeId;
   const puzzleList = getPuzzlesByDifficulty(themeId, diffId);
 
   return (
@@ -81,7 +85,7 @@ export default function PuzzleList() {
                 </View>
 
                 <Text style={[styles.puzzleNameText, { color: theme.text }]} numberOfLines={2}>
-                  {puzzle.name}
+                  {getLocalizedPuzzleName(puzzle.name, lang)}
                 </Text>
               </TouchableOpacity>
             );

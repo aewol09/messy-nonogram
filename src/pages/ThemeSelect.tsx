@@ -8,19 +8,21 @@ import { RootStackParamList } from '../../App';
 import { useGameStore } from '../store/useGameStore';
 import { puzzles } from '../data';
 import { getTheme } from '../styles/theme';
+import { getTranslation } from '../utils/i18n';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'ThemeSelect'>;
-
-const themes = [
-  { id: 'animal', name: '동물', icon: Cat, colorKey: 'orange' },
-  { id: 'food', name: '음식', icon: Coffee, colorKey: 'green' },
-  { id: 'travel', name: '여행', icon: Plane, colorKey: 'blue' },
-];
 
 export default function ThemeSelect() {
   const navigation = useNavigation<NavigationProp>();
   const { completedPuzzles, settings } = useGameStore();
   const theme = getTheme(settings.darkMode);
+  const t = getTranslation(settings.language || 'ko');
+
+  const themes = [
+    { id: 'animal', name: t.themeAnimal, icon: Cat, colorKey: 'orange' },
+    { id: 'food', name: t.themeFood, icon: Coffee, colorKey: 'green' },
+    { id: 'travel', name: t.themeTravel, icon: Plane, colorKey: 'blue' },
+  ];
 
   const getCompletion = (themeId: string) => {
     const total = puzzles.filter(p => p.theme === themeId).length;
@@ -34,29 +36,29 @@ export default function ThemeSelect() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <ArrowLeft size={24} color={theme.text} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: theme.text }]}>테마 선택</Text>
+        <Text style={[styles.headerTitle, { color: theme.text }]}>{t.selectTheme}</Text>
       </View>
 
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
-        {themes.map(t => {
-          const stats = getCompletion(t.id);
-          const Icon = t.icon;
-          const palette = (theme as any)[t.colorKey] || theme.indigo;
+        {themes.map(item => {
+          const stats = getCompletion(item.id);
+          const Icon = item.icon;
+          const palette = (theme as any)[item.colorKey] || theme.indigo;
 
           return (
             <TouchableOpacity
-              key={t.id}
+              key={item.id}
               style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}
               activeOpacity={0.8}
-              onPress={() => navigation.navigate('DifficultySelect', { themeId: t.id })}
+              onPress={() => navigation.navigate('DifficultySelect', { themeId: item.id })}
             >
               <View style={[styles.iconContainer, { backgroundColor: palette[100] }]}>
                 <Icon size={32} color={palette[600]} />
               </View>
               <View style={styles.cardContent}>
-                <Text style={[styles.cardTitle, { color: theme.text }]}>{t.name}</Text>
+                <Text style={[styles.cardTitle, { color: theme.text }]}>{item.name}</Text>
                 <Text style={[styles.cardStats, { color: theme.subText }]}>
-                  {stats.completed} / {stats.total} 완료 ({stats.percentage}%)
+                  {stats.completed} / {stats.total} {t.completed} ({stats.percentage}%)
                 </Text>
               </View>
             </TouchableOpacity>

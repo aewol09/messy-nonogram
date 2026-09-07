@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { GameState, UserProfile, UserAccountData } from '../types';
+import type { LanguageType } from '../utils/i18n';
 import { puzzles } from '../data';
 
 export interface RegisteredUserRecord {
@@ -21,6 +22,7 @@ interface StoreState {
   settings: {
     hapticEnabled: boolean;
     darkMode: boolean;
+    language: LanguageType;
   };
   completePuzzle: (id: string) => void;
   saveProgress: (id: string, state: GameState) => void;
@@ -67,6 +69,7 @@ export const useGameStore = create<StoreState>()(
       settings: {
         hapticEnabled: true,
         darkMode: false,
+        language: 'ko',
       },
 
       completePuzzle: (id: string) => {

@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../../App';
 import { useGameStore } from '../store/useGameStore';
 import { getTheme } from '../styles/theme';
+import { getTranslation } from '../utils/i18n';
 import AuthModal from '../components/AuthModal';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
@@ -15,6 +16,7 @@ export default function Home() {
   const navigation = useNavigation<NavigationProp>();
   const { currentUser, settings } = useGameStore();
   const theme = getTheme(settings.darkMode);
+  const t = getTranslation(settings.language || 'ko');
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   return (
@@ -28,7 +30,7 @@ export default function Home() {
         >
           <User size={16} color={theme.primary} />
           <Text style={[styles.userChipText, { color: theme.text }]} numberOfLines={1}>
-            {currentUser ? currentUser.name : '로그인'}
+            {currentUser ? currentUser.name : t.login}
           </Text>
         </TouchableOpacity>
       </View>
@@ -48,7 +50,7 @@ export default function Home() {
           onPress={() => navigation.navigate('ThemeSelect')}
         >
           <Play size={24} color={theme.white} fill={theme.white} />
-          <Text style={styles.primaryButtonText}>플레이 시작</Text>
+          <Text style={styles.primaryButtonText}>{t.play}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
@@ -57,7 +59,7 @@ export default function Home() {
           onPress={() => navigation.navigate('Collection')}
         >
           <Grid size={24} color={theme.secondary} />
-          <Text style={[styles.secondaryButtonText, { color: theme.secondary }]}>컬렉션</Text>
+          <Text style={[styles.secondaryButtonText, { color: theme.secondary }]}>{t.collection}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
@@ -66,7 +68,7 @@ export default function Home() {
           onPress={() => navigation.navigate('Settings')}
         >
           <SettingsIcon size={24} color={theme.subText} />
-          <Text style={[styles.tertiaryButtonText, { color: theme.subText }]}>설정</Text>
+          <Text style={[styles.tertiaryButtonText, { color: theme.subText }]}>{t.settings}</Text>
         </TouchableOpacity>
       </View>
 

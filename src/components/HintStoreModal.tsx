@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Modal, TouchableOpacity, Alert, ActivityIndicat
 import { Lightbulb, Tv, ShoppingBag, CheckCircle, Sparkles, X } from 'lucide-react-native';
 import { useGameStore } from '../store/useGameStore';
 import { getTheme } from '../styles/theme';
+import { getTranslation } from '../utils/i18n';
 
 interface HintStoreModalProps {
   visible: boolean;
@@ -12,6 +13,8 @@ interface HintStoreModalProps {
 export default function HintStoreModal({ visible, onClose }: HintStoreModalProps) {
   const { hintPool, isUnlimitedHints, addHints, setUnlimitedHints, settings } = useGameStore();
   const theme = getTheme(settings.darkMode);
+  const lang = settings.language || 'ko';
+  const t = getTranslation(lang);
 
   const [isWatchingAd, setIsWatchingAd] = useState(false);
   const [adCountdown, setAdCountdown] = useState(3);
@@ -91,9 +94,9 @@ export default function HintStoreModal({ visible, onClose }: HintStoreModalProps
                 <Lightbulb size={36} color={theme.amber[600]} />
               </View>
 
-              <Text style={[styles.title, { color: theme.text }]}>힌트 충전소</Text>
+              <Text style={[styles.title, { color: theme.text }]}>{t.hintStoreTitle}</Text>
               <Text style={[styles.subtitle, { color: theme.subText }]}>
-                현재 보유 힌트: {isUnlimitedHints ? '무제한 (∞)' : `${hintPool}개`}
+                {t.currentHints}: {isUnlimitedHints ? t.unlimited : `${hintPool}`}
               </Text>
 
               {/* Option 1: Watch Ad */}
@@ -103,18 +106,18 @@ export default function HintStoreModal({ visible, onClose }: HintStoreModalProps
                     <Tv size={24} color="#FFFFFF" />
                   </View>
                   <View>
-                    <Text style={styles.cardTitle}>광고 보고 힌트 충전</Text>
-                    <Text style={styles.cardSub}>짧은 동영상 시청 후 +3개 획득</Text>
+                    <Text style={styles.cardTitle}>{t.watchAd}</Text>
+                    <Text style={styles.cardSub}>{t.watchAdSub}</Text>
                   </View>
                 </View>
                 <View style={styles.freeBadge}>
-                  <Text style={styles.freeBadgeText}>무료 🎁</Text>
+                  <Text style={styles.freeBadgeText}>{t.free}</Text>
                 </View>
               </TouchableOpacity>
 
               <View style={styles.dividerRow}>
                 <View style={[styles.dividerLine, { backgroundColor: theme.border }]} />
-                <Text style={[styles.dividerText, { color: theme.subText }]}>인앱 결제 (IAP)</Text>
+                <Text style={[styles.dividerText, { color: theme.subText }]}>{t.iapSection}</Text>
                 <View style={[styles.dividerLine, { backgroundColor: theme.border }]} />
               </View>
 
@@ -125,7 +128,7 @@ export default function HintStoreModal({ visible, onClose }: HintStoreModalProps
               >
                 <View style={styles.cardLeft}>
                   <ShoppingBag size={20} color={theme.primary} />
-                  <Text style={[styles.iapTitle, { color: theme.text }]}>힌트 10개 팩</Text>
+                  <Text style={[styles.iapTitle, { color: theme.text }]}>{t.pack10}</Text>
                 </View>
                 <Text style={[styles.priceText, { color: theme.primary }]}>₩1,100</Text>
               </TouchableOpacity>
@@ -142,14 +145,14 @@ export default function HintStoreModal({ visible, onClose }: HintStoreModalProps
                 <View style={styles.cardLeft}>
                   <Sparkles size={20} color={theme.primary} />
                   <View>
-                    <Text style={[styles.iapTitle, { color: theme.text }]}>힌트 무제한 패스</Text>
-                    <Text style={[styles.unlimitedSub, { color: theme.subText }]}>평생 모든 퍼즐 힌트 무제한</Text>
+                    <Text style={[styles.iapTitle, { color: theme.text }]}>{t.unlimitedPass}</Text>
+                    <Text style={[styles.unlimitedSub, { color: theme.subText }]}>{t.unlimitedPassSub}</Text>
                   </View>
                 </View>
                 {isUnlimitedHints ? (
                   <View style={styles.activeBadge}>
                     <CheckCircle size={16} color={theme.primary} />
-                    <Text style={[styles.activeBadgeText, { color: theme.primary }]}>사용 중</Text>
+                    <Text style={[styles.activeBadgeText, { color: theme.primary }]}>{t.using}</Text>
                   </View>
                 ) : (
                   <Text style={[styles.priceText, { color: theme.primary }]}>₩3,300</Text>

@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Switch, Alert, ScrollView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ArrowLeft, Bell, Moon, RotateCcw, Info, ChevronRight, ShieldCheck, User, Cloud } from 'lucide-react-native';
+import { ArrowLeft, Bell, Moon, RotateCcw, Info, ChevronRight, ShieldCheck, User, Globe } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGameStore } from '../store/useGameStore';
 import { getTheme } from '../styles/theme';
+import { getTranslation, LanguageType } from '../utils/i18n';
 import AuthModal from '../components/AuthModal';
 import { confirmAction } from '../utils/confirm';
 import { RootStackParamList } from '../../App';
@@ -16,24 +17,32 @@ export default function Settings() {
   const navigation = useNavigation<NavigationProp>();
   const { currentUser, settings, updateSettings, resetAllProgress } = useGameStore();
   const theme = getTheme(settings.darkMode);
+  const lang = settings.language || 'ko';
+  const t = getTranslation(lang);
 
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleReset = () => {
     confirmAction(
-      '진행 상황 초기화',
-      '모든 퍼즐 기록과 컬렉션이 삭제됩니다. 정말 초기화하시겠습니까?',
+      t.resetAllConfirmTitle,
+      t.resetAllConfirmDesc,
       () => {
         resetAllProgress();
         if (Platform.OS === 'web') {
-          alert('모든 기록이 초기화되었습니다.');
+          alert(t.resetAllProgress);
         } else {
-          Alert.alert('완료', '모든 기록이 초기화되었습니다.');
+          Alert.alert(t.confirm, t.resetAllProgress);
         }
       },
-      '초기화'
+      t.reset
     );
   };
+
+  const languages: { id: LanguageType; label: string }[] = [
+    { id: 'ko', label: t.langKo },
+    { id: 'en', label: t.langEn },
+    { id: 'ja', label: t.langJa },
+  ];
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -41,13 +50,13 @@ export default function Settings() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <ArrowLeft size={24} color={theme.text} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: theme.text }]}>설정</Text>
+        <Text style={[styles.headerTitle, { color: theme.text }]}>{t.settingsTitle}</Text>
       </View>
 
       <ScrollView style={styles.content}>
         {/* Account & Sync Section */}
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.subText }]}>계정 & 클라우드 데이터</Text>
+          <Text style={[styles.sectionTitle, { color: theme.subText }]}>{t.accountAndCloud}</Text>
           
           <TouchableOpacity 
             style={[styles.row, { backgroundColor: theme.card, borderColor: theme.border }]} 
@@ -59,10 +68,10 @@ export default function Settings() {
               </View>
               <View>
                 <Text style={[styles.rowLabel, { color: theme.text }]}>
-                  {currentUser ? `아이디: ${currentUser.name}` : '로그인하기'}
+                  {currentUser ? `${t.login}: ${currentUser.name}` : t.login}
                 </Text>
                 <Text style={[styles.subLabel, { color: theme.subText }]}>
-                  {currentUser ? `이메일: ${currentUser.email}` : '구글 또는 이메일 계정 연동'}
+                  {currentUser ? currentUser.email : 'Google / Email Sync'}
                 </Text>
               </View>
             </View>
@@ -72,14 +81,45 @@ export default function Settings() {
 
         {/* Game Settings */}
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.subText }]}>게임 설정</Text>
+          <Text style={[styles.sectionTitle, { color: theme.subText }]}>{t.gameSettings}</Text>
           
+          {/* Language Selector Row */}
+          <View style={[styles.languageRow, { backgroundColor: theme.card, borderColor: theme.border }]}>
+            <View style={styles.rowLeft}>
+              <View style={[styles.iconBox, { backgroundColor: theme.amber[100] }]}>
+                <Globe size={20} color={theme.amber[600]} />
+              </View>
+              <Text style={[styles.rowLabel, { color: theme.text }]}>{t.language}</Text>
+            </View>
+            <View style={styles.langPillContainer}>
+              {languages.map((l) => {
+                const isActive = lang === l.id;
+                return (
+                  <TouchableOpacity
+                    key={l.id}
+                    onPress={() => updateSettings({ language: l.id })}
+                    style={[
+                      styles.langPill,
+                      isActive
+                        ? { backgroundColor: theme.primary }
+                        : { backgroundColor: theme.background, borderWidth: 1, borderColor: theme.border },
+                    ]}
+                  >
+                    <Text style={[styles.langPillText, { color: isActive ? '#FFFFFF' : theme.text }]}>
+                      {l.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+
           <View style={[styles.row, { backgroundColor: theme.card, borderColor: theme.border }]}>
             <View style={styles.rowLeft}>
               <View style={[styles.iconBox, { backgroundColor: theme.indigo[50] }]}>
                 <Bell size={20} color={theme.primary} />
               </View>
-              <Text style={[styles.rowLabel, { color: theme.text }]}>진동 피드백</Text>
+              <Text style={[styles.rowLabel, { color: theme.text }]}>{t.vibration}</Text>
             </View>
             <Switch 
               value={settings.hapticEnabled} 
@@ -94,7 +134,7 @@ export default function Settings() {
               <View style={[styles.iconBox, { backgroundColor: theme.slate[100] }]}>
                 <Moon size={20} color={theme.slate[600]} />
               </View>
-              <Text style={[styles.rowLabel, { color: theme.text }]}>다크 모드</Text>
+              <Text style={[styles.rowLabel, { color: theme.text }]}>{t.darkMode}</Text>
             </View>
             <Switch 
               value={settings.darkMode} 
@@ -107,7 +147,7 @@ export default function Settings() {
 
         {/* Data Management */}
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.subText }]}>데이터 관리</Text>
+          <Text style={[styles.sectionTitle, { color: theme.subText }]}>{t.dataMgmt}</Text>
           
           <TouchableOpacity 
             style={[styles.row, { backgroundColor: theme.card, borderColor: theme.border }]} 
@@ -117,7 +157,7 @@ export default function Settings() {
               <View style={[styles.iconBox, { backgroundColor: theme.rose[50] }]}>
                 <RotateCcw size={20} color={theme.rose[600]} />
               </View>
-              <Text style={[styles.rowLabel, { color: theme.rose[600] }]}>진행 상황 초기화</Text>
+              <Text style={[styles.rowLabel, { color: theme.rose[600] }]}>{t.resetAllProgress}</Text>
             </View>
             <ChevronRight size={20} color={theme.border} />
           </TouchableOpacity>
@@ -125,14 +165,14 @@ export default function Settings() {
 
         {/* Info */}
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.subText }]}>정보</Text>
+          <Text style={[styles.sectionTitle, { color: theme.subText }]}>{t.info}</Text>
           
           <View style={[styles.row, { backgroundColor: theme.card, borderColor: theme.border }]}>
             <View style={styles.rowLeft}>
               <View style={[styles.iconBox, { backgroundColor: theme.blue[100] }]}>
                 <Info size={20} color={theme.blue[600]} />
               </View>
-              <Text style={[styles.rowLabel, { color: theme.text }]}>버전</Text>
+              <Text style={[styles.rowLabel, { color: theme.text }]}>{t.version}</Text>
             </View>
             <Text style={[styles.versionText, { color: theme.subText }]}>1.0.0</Text>
           </View>
@@ -145,7 +185,7 @@ export default function Settings() {
               <View style={[styles.iconBox, { backgroundColor: theme.emerald[100] }]}>
                 <ShieldCheck size={20} color={theme.emerald[600]} />
               </View>
-              <Text style={[styles.rowLabel, { color: theme.text }]}>개인정보 처리방침</Text>
+              <Text style={[styles.rowLabel, { color: theme.text }]}>{t.privacyPolicy}</Text>
             </View>
             <ChevronRight size={20} color={theme.border} />
           </TouchableOpacity>
@@ -198,6 +238,31 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginBottom: 8,
     borderWidth: 1,
+  },
+  languageRow: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 8,
+    borderWidth: 1,
+    gap: 12,
+  },
+  langPillContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    gap: 8,
+  },
+  langPill: {
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  langPillText: {
+    fontSize: 13,
+    fontWeight: 'bold',
   },
   rowLeft: {
     flexDirection: 'row',

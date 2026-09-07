@@ -4,6 +4,8 @@ import { Trophy, ArrowRight, Grid, Award, Sparkles, X } from 'lucide-react-nativ
 import type { Puzzle } from '../types';
 import PixelArtPreview from './PixelArtPreview';
 import { getTheme } from '../styles/theme';
+import { useGameStore } from '../store/useGameStore';
+import { getTranslation, getLocalizedPuzzleName } from '../utils/i18n';
 
 interface PuzzleWinModalProps {
   visible: boolean;
@@ -24,14 +26,19 @@ export default function PuzzleWinModal({
   onGoToList,
   darkMode = false,
 }: PuzzleWinModalProps) {
+  const { settings } = useGameStore();
   const theme = getTheme(darkMode);
+  const lang = settings.language || 'ko';
+  const t = getTranslation(lang);
+
+  const localizedName = getLocalizedPuzzleName(puzzle.name, lang);
 
   const difficultyLabel =
     puzzle.difficulty === 'easy'
-      ? '쉬움 (10x10)'
+      ? t.diffEasy
       : puzzle.difficulty === 'normal'
-      ? '보통 (15x15)'
-      : '어려움 (20x20)';
+      ? t.diffNormal
+      : t.diffHard;
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
@@ -51,9 +58,15 @@ export default function PuzzleWinModal({
               </View>
             </View>
 
-            <Text style={[styles.title, { color: theme.text }]}>퍼즐 완성!</Text>
+            <Text style={[styles.title, { color: theme.text }]}>{t.winTitle}</Text>
             <Text style={[styles.subtitle, { color: theme.subText }]}>
-              축하합니다! <Text style={styles.puzzleHighlight}>'{puzzle.name}'</Text> 그림을 완성했습니다.
+              {lang === 'ko' ? (
+                <>축하합니다! <Text style={styles.puzzleHighlight}>'{localizedName}'</Text> 그림을 완성했습니다.</>
+              ) : lang === 'ja' ? (
+                <>おめでとうございます！ <Text style={styles.puzzleHighlight}>『{localizedName}』</Text> を完成させました。</>
+              ) : (
+                <>Congratulations! You solved <Text style={styles.puzzleHighlight}>'{localizedName}'</Text>.</>
+              )}
             </Text>
           </View>
 
@@ -66,7 +79,7 @@ export default function PuzzleWinModal({
               </View>
               <View style={[styles.infoBadge, { backgroundColor: theme.indigo[50] }]}>
                 <Award size={12} color={theme.indigo[700]} />
-                <Text style={[styles.infoBadgeText, { color: theme.indigo[700] }]}>클리어 획득</Text>
+                <Text style={[styles.infoBadgeText, { color: theme.indigo[700] }]}>{t.completed}</Text>
               </View>
             </View>
 
@@ -89,7 +102,7 @@ export default function PuzzleWinModal({
                 onPress={onNextPuzzle}
                 activeOpacity={0.85}
               >
-                <Text style={styles.btnPrimaryText}>다음 퍼즐 도전</Text>
+                <Text style={styles.btnPrimaryText}>{t.nextPuzzle}</Text>
                 <ArrowRight size={18} color="#FFFFFF" />
               </TouchableOpacity>
             )}
@@ -100,7 +113,7 @@ export default function PuzzleWinModal({
                 onPress={onGoToCollection}
                 activeOpacity={0.8}
               >
-                <Text style={[styles.btnSecondaryText, { color: theme.text }]}>컬렉션 보기</Text>
+                <Text style={[styles.btnSecondaryText, { color: theme.text }]}>{t.viewCollection}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -108,7 +121,7 @@ export default function PuzzleWinModal({
                 onPress={onGoToList}
                 activeOpacity={0.8}
               >
-                <Text style={[styles.btnSecondaryText, { color: theme.text }]}>목록으로</Text>
+                <Text style={[styles.btnSecondaryText, { color: theme.text }]}>{t.goToList}</Text>
               </TouchableOpacity>
             </View>
           </View>

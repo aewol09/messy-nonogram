@@ -10,26 +10,30 @@ import { puzzles } from '../data';
 import { getTheme } from '../styles/theme';
 import PixelArtPreview from '../components/PixelArtPreview';
 import { confirmAction } from '../utils/confirm';
+import { getTranslation, getLocalizedPuzzleName } from '../utils/i18n';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Collection'>;
-
-const themes = [
-  { id: 'animal', name: '동물', icon: Cat },
-  { id: 'food', name: '음식', icon: Coffee },
-  { id: 'travel', name: '여행', icon: Plane },
-];
-
-const difficultySections = [
-  { id: 'easy', title: 'Easy (10x10)', icon: Zap, themeKey: 'emerald' },
-  { id: 'normal', title: 'Normal (15x15)', icon: Star, themeKey: 'amber' },
-  { id: 'hard', title: 'Hard (20x20)', icon: ShieldAlert, themeKey: 'rose' },
-];
 
 export default function Collection() {
   const navigation = useNavigation<NavigationProp>();
   const { completedPuzzles, currentUser, unlockAllPuzzles, settings } = useGameStore();
   const theme = getTheme(settings.darkMode);
+  const lang = settings.language || 'ko';
+  const t = getTranslation(lang);
+
   const [activeTab, setActiveTab] = useState('animal');
+
+  const themes = [
+    { id: 'animal', name: t.themeAnimal, icon: Cat },
+    { id: 'food', name: t.themeFood, icon: Coffee },
+    { id: 'travel', name: t.themeTravel, icon: Plane },
+  ];
+
+  const difficultySections = [
+    { id: 'easy', title: t.diffEasy, icon: Zap, themeKey: 'emerald' },
+    { id: 'normal', title: t.diffNormal, icon: Star, themeKey: 'amber' },
+    { id: 'hard', title: t.diffHard, icon: ShieldAlert, themeKey: 'rose' },
+  ];
 
   const isAdmin = currentUser?.isAdmin || currentUser?.email?.toLowerCase().includes('admin');
   const themePuzzles = puzzles.filter((p) => p.theme === activeTab);
@@ -57,7 +61,7 @@ export default function Collection() {
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <ArrowLeft size={24} color={theme.text} />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, { color: theme.text }]}>컬렉션</Text>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>{t.collection}</Text>
 
           {isAdmin && (
             <TouchableOpacity
@@ -72,14 +76,14 @@ export default function Collection() {
         </View>
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsContainer}>
-          {themes.map((t) => {
-            const Icon = t.icon;
-            const isActive = activeTab === t.id;
+          {themes.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
 
             return (
               <TouchableOpacity
-                key={t.id}
-                onPress={() => setActiveTab(t.id)}
+                key={tab.id}
+                onPress={() => setActiveTab(tab.id)}
                 style={[
                   styles.tab,
                   isActive
@@ -89,7 +93,7 @@ export default function Collection() {
               >
                 <Icon size={18} color={isActive ? theme.white : theme.subText} />
                 <Text style={[styles.tabText, { color: isActive ? theme.white : theme.subText }]}>
-                  {t.name}
+                  {tab.name}
                 </Text>
               </TouchableOpacity>
             );
@@ -120,7 +124,7 @@ export default function Collection() {
                   </Text>
                 </View>
                 <Text style={[styles.sectionStatsText, { color: theme.subText }]}>
-                  {completedCount} / {sectionPuzzles.length} 완성
+                  {completedCount} / {sectionPuzzles.length} {t.completed}
                 </Text>
               </View>
 
@@ -151,14 +155,16 @@ export default function Collection() {
                           </View>
                           <View style={[styles.puzzleNameOverlay, { backgroundColor: theme.card }]}>
                             <Text style={[styles.puzzleNameText, { color: theme.text }]} numberOfLines={1}>
-                              {puzzle.name}
+                              {getLocalizedPuzzleName(puzzle.name, lang)}
                             </Text>
                           </View>
                         </View>
                       ) : (
                         <View style={styles.lockedContainer}>
                           <Lock size={24} color={theme.subText} />
-                          <Text style={[styles.lockedText, { color: theme.subText }]}>{idx + 1}번 퍼즐</Text>
+                          <Text style={[styles.lockedText, { color: theme.subText }]}>
+                            {lang === 'en' ? `${t.puzzleNum}${idx + 1}` : `${idx + 1}${t.puzzleNum}`}
+                          </Text>
                         </View>
                       )}
                     </View>

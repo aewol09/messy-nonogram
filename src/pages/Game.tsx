@@ -13,6 +13,7 @@ import HintStoreModal from '../components/HintStoreModal';
 import PuzzleWinModal from '../components/PuzzleWinModal';
 import { getTheme } from '../styles/theme';
 import { confirmAction } from '../utils/confirm';
+import { getTranslation, getLocalizedPuzzleName } from '../utils/i18n';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Game'>;
 type RouteProps = RouteProp<RootStackParamList, 'Game'>;
@@ -41,6 +42,8 @@ export default function Game() {
   } = useGameStore();
 
   const theme = getTheme(settings.darkMode);
+  const lang = settings.language || 'ko';
+  const t = getTranslation(lang);
   const isAdmin = currentUser?.isAdmin || currentUser?.email?.toLowerCase().includes('admin');
 
   const [board, setBoard] = useState<number[][]>([]);
@@ -199,7 +202,7 @@ export default function Game() {
       resetProgress(puzzle.id);
     };
 
-    confirmAction('퍼즐 초기화', '정말 퍼즐을 초기화하고 다시 시작하시겠습니까?', executeReset, '초기화');
+    confirmAction(t.resetConfirmTitle, t.resetConfirmDesc, executeReset, t.reset);
   };
 
   const useHintAction = () => {
@@ -246,7 +249,9 @@ export default function Game() {
           <ArrowLeft size={24} color={theme.text} />
         </TouchableOpacity>
         <View style={styles.headerTextContainer}>
-          <Text style={[styles.headerTitle, { color: theme.text }]}>{puzzle.name}</Text>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>
+            {getLocalizedPuzzleName(puzzle.name, lang)}
+          </Text>
           <Text style={[styles.headerSubtitle, { color: theme.subText }]}>{puzzle.width}x{puzzle.height}</Text>
         </View>
 
@@ -257,7 +262,7 @@ export default function Game() {
             activeOpacity={0.8}
           >
             <Eye size={16} color="#FFFFFF" />
-            <Text style={styles.adminHeaderBtnText}>👑 정답 공개</Text>
+            <Text style={styles.adminHeaderBtnText}>{t.revealAnswer}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -294,7 +299,7 @@ export default function Game() {
         >
           <CheckSquare size={22} color={mode === 'fill' ? theme.white : theme.subText} />
           <Text style={[styles.footerBtnText, { color: mode === 'fill' ? theme.white : theme.subText }]}>
-            채우기
+            {t.fillMode}
           </Text>
         </TouchableOpacity>
 
@@ -309,7 +314,7 @@ export default function Game() {
         >
           <XSquare size={22} color={mode === 'x' ? theme.white : theme.subText} />
           <Text style={[styles.footerBtnText, { color: mode === 'x' ? theme.white : theme.subText }]}>
-            X 표시
+            {t.xMode}
           </Text>
         </TouchableOpacity>
 
@@ -330,7 +335,7 @@ export default function Game() {
               <Text style={styles.hintBadgeText}>{totalHintsAvailable}</Text>
             </View>
           </View>
-          <Text style={[styles.footerBtnText, { color: theme.amber[600] }]}>힌트</Text>
+          <Text style={[styles.footerBtnText, { color: theme.amber[600] }]}>{t.hint}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -341,7 +346,7 @@ export default function Game() {
           ]}
         >
           <RotateCcw size={22} color={theme.rose[600]} />
-          <Text style={[styles.footerBtnText, { color: theme.rose[600] }]}>초기화</Text>
+          <Text style={[styles.footerBtnText, { color: theme.rose[600] }]}>{t.reset}</Text>
         </TouchableOpacity>
       </View>
 

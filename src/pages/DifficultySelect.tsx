@@ -8,21 +8,10 @@ import { RootStackParamList } from '../../App';
 import { useGameStore } from '../store/useGameStore';
 import { puzzles } from '../data';
 import { getTheme } from '../styles/theme';
+import { getTranslation } from '../utils/i18n';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'DifficultySelect'>;
 type RouteProps = RouteProp<RootStackParamList, 'DifficultySelect'>;
-
-const difficulties = [
-  { id: 'easy', name: 'Easy', size: '10x10', icon: Zap, themeColor: 'emerald' },
-  { id: 'normal', name: 'Normal', size: '15x15', icon: Star, themeColor: 'amber' },
-  { id: 'hard', name: 'Hard', size: '20x20', icon: ShieldAlert, themeColor: 'rose' }
-];
-
-const themeNames: Record<string, string> = {
-  animal: '동물',
-  food: '음식',
-  travel: '여행'
-};
 
 export default function DifficultySelect() {
   const navigation = useNavigation<NavigationProp>();
@@ -30,6 +19,19 @@ export default function DifficultySelect() {
   const { themeId } = route.params;
   const { completedPuzzles, settings } = useGameStore();
   const theme = getTheme(settings.darkMode);
+  const t = getTranslation(settings.language || 'ko');
+
+  const themeNames: Record<string, string> = {
+    animal: t.themeAnimal,
+    food: t.themeFood,
+    travel: t.themeTravel
+  };
+
+  const difficulties = [
+    { id: 'easy', name: 'Easy', label: t.diffEasy, size: '10x10', icon: Zap, themeColor: 'emerald' },
+    { id: 'normal', name: 'Normal', label: t.diffNormal, size: '15x15', icon: Star, themeColor: 'amber' },
+    { id: 'hard', name: 'Hard', label: t.diffHard, size: '20x20', icon: ShieldAlert, themeColor: 'rose' }
+  ];
 
   const getCompletion = (diffId: string) => {
     const themePuzzles = puzzles.filter(p => p.theme === themeId && p.difficulty === diffId);
@@ -38,7 +40,7 @@ export default function DifficultySelect() {
     return { completed, total, percentage: total > 0 ? Math.round((completed / total) * 100) : 0 };
   };
 
-  const themeName = themeNames[themeId] || '테마';
+  const themeName = themeNames[themeId] || 'Theme';
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -46,7 +48,7 @@ export default function DifficultySelect() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <ArrowLeft size={24} color={theme.text} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: theme.text }]}>{themeName} - 난이도</Text>
+        <Text style={[styles.headerTitle, { color: theme.text }]}>{themeName} - {t.selectDifficulty}</Text>
       </View>
 
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
@@ -78,7 +80,7 @@ export default function DifficultySelect() {
                 </View>
 
                 <Text style={[styles.cardStats, { color: theme.subText }]}>
-                  {stats.completed} / {stats.total} 완료
+                  {stats.completed} / {stats.total} {t.completed}
                 </Text>
               </View>
             </TouchableOpacity>
