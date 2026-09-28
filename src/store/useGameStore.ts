@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { GameState, UserProfile, UserAccountData } from '../types';
 import type { LanguageType } from '../utils/i18n';
 import { puzzles } from '../data';
+import { sendWelcomeEmail } from '../utils/sendEmail';
 
 export interface RegisteredUserRecord {
   username: string;
@@ -40,7 +41,6 @@ interface StoreState {
   // Auth Actions
   registerUser: (username: string, email: string, password: string) => { success: boolean; message?: string };
   loginUser: (idOrEmail: string, password: string) => { success: boolean; message?: string };
-  loginWithGoogle: () => void;
   loginWithEmail: (email: string, customName?: string) => void;
   loginAsAdmin: () => void;
   loginAsGuest: () => void;
@@ -267,6 +267,9 @@ export const useGameStore = create<StoreState>()(
           },
         }));
 
+        // 이메일 발송 (비동기 처리로 UI 차단 방지)
+        sendWelcomeEmail(cleanEmail, cleanUsername);
+
         // Log in immediately
         get().loginWithEmail(cleanEmail, cleanUsername);
         return { success: true };
@@ -305,49 +308,6 @@ export const useGameStore = create<StoreState>()(
         // Login with verified credentials
         get().loginWithEmail(registeredUser.email, registeredUser.username);
         return { success: true };
-      },
-
-      loginWithGoogle: () => {
-        const googleUser: UserProfile = {
-          id: 'google_user_123',
-          name: '구글 사용자',
-          email: 'user@gmail.com',
-          provider: 'google',
-          isAdmin: false,
-        };
-
-        set((state) => {
-          const updatedAccounts = { ...state.accounts };
-          if (state.currentUser) {
-            updatedAccounts[state.currentUser.id] = {
-              profile: state.currentUser,
-              completedPuzzles: state.completedPuzzles,
-              inProgressPuzzles: state.inProgressPuzzles,
-              hintPool: state.hintPool,
-              isUnlimitedHints: state.currentUser.isAdmin ? true : false,
-            };
-          }
-
-          const targetAccount = updatedAccounts[googleUser.id];
-          const newAccountData: UserAccountData = targetAccount || {
-            profile: googleUser,
-            completedPuzzles: [],
-            inProgressPuzzles: {},
-            hintPool: 3,
-            isUnlimitedHints: false,
-          };
-
-          updatedAccounts[googleUser.id] = newAccountData;
-
-          return {
-            currentUser: googleUser,
-            completedPuzzles: newAccountData.completedPuzzles,
-            inProgressPuzzles: newAccountData.inProgressPuzzles,
-            hintPool: newAccountData.hintPool,
-            isUnlimitedHints: false,
-            accounts: updatedAccounts,
-          };
-        });
       },
 
       loginWithEmail: (email: string, customName?: string) => {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, Alert, Platform, KeyboardAvoidingView } from 'react-native';
 import { LogIn, UserCheck, Mail, Lock, LogOut, ShieldCheck, Trash2, X, UserPlus, User as UserIcon } from 'lucide-react-native';
 import { useGameStore } from '../store/useGameStore';
 import { getTheme } from '../styles/theme';
@@ -11,7 +11,7 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ visible, onClose }: AuthModalProps) {
-  const { currentUser, loginWithGoogle, loginUser, registerUser, loginAsGuest, logout, deleteAccount, settings } = useGameStore();
+  const { currentUser, loginUser, registerUser, loginAsGuest, logout, deleteAccount, settings } = useGameStore();
   const theme = getTheme(settings.darkMode);
 
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
@@ -95,11 +95,7 @@ export default function AuthModal({ visible, onClose }: AuthModalProps) {
     }
   };
 
-  const handleGoogleAuth = () => {
-    loginWithGoogle();
-    showAlert('구글 로그인 완료', '구글 계정(user@gmail.com)으로 데이터가 동기화되었습니다.');
-    onClose();
-  };
+
 
   const handleGuestAuth = () => {
     loginAsGuest();
@@ -121,9 +117,13 @@ export default function AuthModal({ visible, onClose }: AuthModalProps) {
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <View style={styles.overlay}>
-        <View style={[styles.modalContent, { backgroundColor: theme.card, borderColor: theme.border }]}>
-          <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <View style={styles.overlay}>
+          <View style={[styles.modalContent, { backgroundColor: theme.card, borderColor: theme.border }]}>
+            <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
             <X size={20} color={theme.subText} />
           </TouchableOpacity>
 
@@ -308,10 +308,7 @@ export default function AuthModal({ visible, onClose }: AuthModalProps) {
                 </View>
               )}
 
-              {/* Google Auth Button */}
-              <TouchableOpacity style={styles.googleBtn} onPress={handleGoogleAuth} activeOpacity={0.8}>
-                <Text style={styles.googleBtnText}>Google 계정으로 계속하기</Text>
-              </TouchableOpacity>
+
 
               {/* Guest Link */}
               <TouchableOpacity style={styles.guestLink} onPress={handleGuestAuth}>
@@ -321,6 +318,7 @@ export default function AuthModal({ visible, onClose }: AuthModalProps) {
           )}
         </View>
       </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -466,20 +464,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
   },
-  googleBtn: {
-    width: '100%',
-    backgroundColor: '#4285F4',
-    paddingVertical: 12,
-    borderRadius: 14,
-    alignItems: 'center',
-    marginBottom: 12,
-    elevation: 2,
-  },
-  googleBtnText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 13,
-  },
+
   guestLink: {
     paddingVertical: 4,
   },
