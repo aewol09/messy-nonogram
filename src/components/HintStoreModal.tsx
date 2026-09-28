@@ -43,7 +43,7 @@ export default function HintStoreModal({ visible, onClose }: HintStoreModalProps
   // 구글 플레이 콘솔에 등록한 실제 '일회성 제품 ID'를 아래에 입력하세요!
   const itemSkus = Platform.select({
     ios: [],
-    android: ['hints_10', 'unlimited_pass'] // <-- 이곳을 실제 제품 ID로 변경하세요
+    android: ['hint_pack_10', 'hint_pass_infinity'] // <-- 이곳을 실제 제품 ID로 변경하세요
   }) || [];
 
   React.useEffect(() => {
@@ -58,14 +58,14 @@ export default function HintStoreModal({ visible, onClose }: HintStoreModalProps
         try {
           const receipt = purchase.transactionReceipt;
           if (receipt) {
-            if (purchase.productId === 'hints_10') {
+            if (purchase.productId === 'hint_pack_10') {
               addHints(10);
               Alert.alert('결제 성공', '힌트 10개가 지급되었습니다!');
-            } else if (purchase.productId === 'unlimited_pass') {
+            } else if (purchase.productId === 'hint_pass_infinity') {
               setUnlimitedHints(true);
               Alert.alert('🎉 무제한 패스 활성화!', '모든 퍼즐 힌트 무제한이 적용되었습니다.');
             }
-            await finishTransaction({ purchase, isConsumable: purchase.productId === 'hints_10' });
+            await finishTransaction({ purchase, isConsumable: purchase.productId === 'hint_pack_10' });
           }
         } catch (error) {
           console.warn('finishTransaction error', error);
@@ -77,7 +77,7 @@ export default function HintStoreModal({ visible, onClose }: HintStoreModalProps
 
   const handlePurchasePackage = async (count: number, price: string) => {
     try {
-      await requestPurchase({ sku: 'hints_10' }); // 실제 ID로 변경
+      await requestPurchase({ sku: 'hint_pack_10' }); // 실제 ID로 변경
     } catch (err: any) {
       if (err.code !== 'E_USER_CANCELLED') {
         Alert.alert('결제 오류', err.message);
@@ -87,7 +87,7 @@ export default function HintStoreModal({ visible, onClose }: HintStoreModalProps
 
   const handlePurchaseUnlimited = async () => {
     try {
-      await requestPurchase({ sku: 'unlimited_pass' }); // 실제 ID로 변경
+      await requestPurchase({ sku: 'hint_pass_infinity' }); // 실제 ID로 변경
     } catch (err: any) {
       if (err.code !== 'E_USER_CANCELLED') {
         Alert.alert('결제 오류', err.message);
