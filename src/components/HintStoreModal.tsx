@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, Alert, ActivityIndicator, Platform } from 'react-native';
 import { Lightbulb, Tv, ShoppingBag, CheckCircle, Sparkles, X } from 'lucide-react-native';
 import { useGameStore } from '../store/useGameStore';
 import { getTheme } from '../styles/theme';
 import { getTranslation } from '../utils/i18n';
+import { useIAP } from 'react-native-iap';
 
 interface HintStoreModalProps {
   visible: boolean;
@@ -37,38 +38,61 @@ export default function HintStoreModal({ visible, onClose }: HintStoreModalProps
     }, 1000);
   };
 
-  const handlePurchasePackage = (count: number, price: string) => {
-    Alert.alert(
-      '인앱 결제 확인',
-      `힌트 ${count}개 팩 (${price})을 결제하시겠습니까?`,
-      [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '결제하기',
-          onPress: () => {
-            addHints(count);
-            Alert.alert('결제 성공', `힌트 +${count}개가 충전되었습니다!`);
-          },
-        },
-      ]
-    );
+  const { connected, getProducts, requestPurchase, currentPurchase, finishTransaction } = useIAP();
+  
+  // 구글 플레이 콘솔에 등록한 실제 '일회성 제품 ID'를 아래에 입력하세요!
+  const itemSkus = Platform.select({
+    ios: [],
+    android: ['hints_10', 'unlimited_pass'] // <-- 이곳을 실제 제품 ID로 변경하세요
+  }) || [];
+
+  React.useEffect(() => {
+    if (visible && connected) {
+      getProducts({ skus: itemSkus }).catch(console.warn);
+    }
+  }, [visible, connected]);
+
+  React.useEffect(() => {
+    const checkCurrentPurchase = async (purchase: any) => {
+      if (purchase) {
+        try {
+          const receipt = purchase.transactionReceipt;
+          if (receipt) {
+            if (purchase.productId === 'hints_10') {
+              addHints(10);
+              Alert.alert('결제 성공', '힌트 10개가 지급되었습니다!');
+            } else if (purchase.productId === 'unlimited_pass') {
+              setUnlimitedHints(true);
+              Alert.alert('🎉 무제한 패스 활성화!', '모든 퍼즐 힌트 무제한이 적용되었습니다.');
+            }
+            await finishTransaction({ purchase, isConsumable: purchase.productId === 'hints_10' });
+          }
+        } catch (error) {
+          console.warn('finishTransaction error', error);
+        }
+      }
+    };
+    checkCurrentPurchase(currentPurchase);
+  }, [currentPurchase, finishTransaction]);
+
+  const handlePurchasePackage = async (count: number, price: string) => {
+    try {
+      await requestPurchase({ sku: 'hints_10' }); // 실제 ID로 변경
+    } catch (err: any) {
+      if (err.code !== 'E_USER_CANCELLED') {
+        Alert.alert('결제 오류', err.message);
+      }
+    }
   };
 
-  const handlePurchaseUnlimited = () => {
-    Alert.alert(
-      '인앱 결제 확인',
-      '힌트 무제한 패스 (₩3,300)를 결제하시겠습니까?\n모든 퍼즐에서 힌트를 제한 없이 사용하실 수 있습니다.',
-      [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '결제하기',
-          onPress: () => {
-            setUnlimitedHints(true);
-            Alert.alert('🎉 무제한 패스 활성화!', '모든 퍼즐 힌트 무제한이 적용되었습니다.');
-          },
-        },
-      ]
-    );
+  const handlePurchaseUnlimited = async () => {
+    try {
+      await requestPurchase({ sku: 'unlimited_pass' }); // 실제 ID로 변경
+    } catch (err: any) {
+      if (err.code !== 'E_USER_CANCELLED') {
+        Alert.alert('결제 오류', err.message);
+      }
+    }
   };
 
   return (

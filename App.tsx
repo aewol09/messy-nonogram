@@ -52,7 +52,9 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, Error
   }
 }
 
-export default function App() {
+import { withIAPContext } from 'react-native-iap';
+
+function App() {
   return (
     <ErrorBoundary>
       <SafeAreaProvider>
@@ -72,4 +74,6 @@ export default function App() {
     </ErrorBoundary>
   );
 }
+
+export default withIAPContext(App);
 
